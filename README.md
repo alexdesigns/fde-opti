@@ -34,21 +34,34 @@ Optimizely AI Chat (TR1)        Webhook: ClickUp, WordPress, other systems (TR2)
                     └─ submit_readiness_result (custom tool), ClickUp connector, or Chat reply
 ```
 
-RC3 returns exactly one of four states: `INPUT_REQUIRED`, `NEEDS_REVISION`, `VALIDATION_UNAVAILABLE`, `READY_FOR_FORMAL_REVIEW`. There is no approved state. Details: [docs/architecture.md](docs/architecture.md) and [docs/workflow.md](docs/workflow.md).
+Details: [docs/architecture.md](docs/architecture.md) and [docs/workflow.md](docs/workflow.md).
 
-## Components
+## Canonical states
+
+RC3 returns exactly one of four states, set by fixed rules in code:
+
+| State | Meaning |
+|---|---|
+| `INPUT_REQUIRED` | Draft, market or audience missing or malformed. Nothing was checked. |
+| `NEEDS_REVISION` | At least one claim or content issue must be fixed. Findings say what. |
+| `VALIDATION_UNAVAILABLE` | Claims could not be checked, so nothing is reported as ready. |
+| `READY_FOR_FORMAL_REVIEW` | Every cited claim valid with matching wording, no blocking content issue. |
+
+There is no approved state.
+
+## Assignment-to-component mapping
 
 The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent Workflows and Tools. The current Optimizely AI interface calls Instructions "Skills". This table maps one to the other.
 
 | Assignment concept | Component (exact name) | Purpose | Artifact |
 |---|---|---|---|
-| Instruction (Main Agent entry behavior) | OptiThera Regulated Content Intake (Skill) | Gathers draft, market and audience in Chat and runs the workflow only on a clear request | [instructions/OptiThera-Regulated-Content-Intake.txt](instructions/OptiThera-Regulated-Content-Intake.txt) |
-| Shared Instruction | Regulated Content Review Standard (Skill) | One review standard and authority boundary used by both agents | [instructions/Regulated-Content-Review-Standard.txt](instructions/Regulated-Content-Review-Standard.txt) |
-| Specialized Agent 1 | Claim Identification & Explanation Agent | Validates cited claim IDs with the tool and explains each result | [agents/Claim-Identification-Explanation-Agent.json](agents/Claim-Identification-Explanation-Agent.json) |
-| Specialized Agent 2 | Content Readiness Reviewer | Reviews the full draft in context and returns structured findings | [agents/Content-Readiness-Reviewer.json](agents/Content-Readiness-Reviewer.json) |
+| Instructions / Main Agent | OptiThera Regulated Content Intake (Primary Instruction / Skill) | Gathers draft, market and audience in Chat and runs the workflow only on a clear request | [instructions/OptiThera-Regulated-Content-Intake.txt](instructions/OptiThera-Regulated-Content-Intake.txt) |
+| Instructions (shared) | Regulated Content Review Standard (Shared Instruction / Skill) | One review standard and authority boundary used by both agents | [instructions/Regulated-Content-Review-Standard.txt](instructions/Regulated-Content-Review-Standard.txt) |
+| Specialized Agent | Claim Identification & Explanation Agent | Validates cited claim IDs with the tool and explains each result | [agents/Claim-Identification-Explanation-Agent.json](agents/Claim-Identification-Explanation-Agent.json) |
+| Specialized Agent | Content Readiness Reviewer | Reviews the full draft in context and returns structured findings | [agents/Content-Readiness-Reviewer.json](agents/Content-Readiness-Reviewer.json) |
 | Agent Workflow | Regulated Content Readiness Workflow | Orders the steps, gates on inputs and validation, sets the state in code | [workflow/Regulated-Content-Readiness-Workflow.json](workflow/Regulated-Content-Readiness-Workflow.json) |
-| Custom Tool 1 | `validate_approved_claim` | Deterministic lookup of governed claim facts | [tools/validate-approved-claim](tools/validate-approved-claim) |
-| Custom Tool 2 | `submit_readiness_result` | Returns the packaged result to callback-based integrations | [tools/submit-readiness-result](tools/submit-readiness-result) |
+| Tool Integration / Custom Tool | `validate_approved_claim` | Deterministic lookup of governed claim facts | [tools/validate-approved-claim](tools/validate-approved-claim) |
+| Tool Integration / Custom Tool | `submit_readiness_result` | Returns the packaged result to callback-based integrations | [tools/submit-readiness-result](tools/submit-readiness-result) |
 
 ## Repository contents
 

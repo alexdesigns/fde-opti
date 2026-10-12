@@ -23,14 +23,14 @@ cd tools && npm install && npm test
 
 What the tests and the live runs establish, by behavior:
 
-- **Trigger and non-trigger.** In Chat this lives in the Intake Skill (see [instructions-and-skills.md](instructions-and-skills.md)). On ClickUp, only a move to Internal Review starts a run. On WordPress, autosave, preview and unchanged content do not.
-- **Input validation.** Missing draft, market or audience gives `INPUT_REQUIRED` before any model runs. `USA` is rejected, not converted.
+- **Trigger and non-trigger.** In Chat this lives in the Intake Skill (see [instructions-and-skills.md](instructions-and-skills.md)). On ClickUp, only a move to Internal Review starts a run. On WordPress, autosave, an unchanged save and a double-click do not start extra runs.
+- **Input validation.** Missing draft, market or audience gives `INPUT_REQUIRED` before either agent runs. `USA` is rejected, not converted.
 - **Canonical states.** Exactly four. The step tests check that no approved state is produced.
 - **Delivery.** Chat needs no callback; a webhook with a valid `request_id` calls `submit_readiness_result`; ClickUp writes fields, then the comment, then the status.
 - **Duplicate suppression.** A retried ClickUp event is recognized by a delivery key in the task's comments and posts nothing. An identical callback is acknowledged as a duplicate; a different result for the same request is rejected.
 - **Stale results.** In WordPress a meaningful edit marks the last result stale; with auto-run on, the next update replaces it with a fresh result. A request and its result expire 24 hours after the request was accepted; a late callback gets 410 `expired`.
 
-I also ran the main cases (a ready draft, wording drift, missing input) against the live workflow from Chat, the webhook gateway, ClickUp and WordPress, and checked the trigger matrix on a private, unpublished test page in the production WordPress installation.
+I also ran the main cases (a ready draft, wording drift, missing input) against the live workflow from Chat, the webhook gateway, ClickUp and WordPress, and checked the trigger matrix on a private, unpublished test page in the production WordPress installation: no run with auto-run off, one run per meaningful update with it on, none on an unchanged save or an autosave, and one run for a double-click. Run counts come from Optimizely AI execution history.
 
 ## 2. Output evaluation
 
@@ -44,7 +44,7 @@ So I treated eval scores as evidence to inspect, not as truth. I read the output
 
 Two real findings came from reading execution history rather than results.
 
-**A. The Claim agent rewrote an invalid market.** Given market `USA`, the trace showed the agent calling `validate_approved_claim` with `US` instead and returning valid claims. The final answer looked reasonable. It was wrong: the caller's input had been silently corrected, and the final answer did not show it. Fix: the agent prompt now says to pass market, audience and date exactly as given, never to change, normalize or correct them, and never to retry a failed call with altered inputs. The validator already rejects `USA`. Re-run: `USA` (and later `GBR`) returned `invalid_request` with one tool call and no retry.
+**A. The Claim agent rewrote an invalid market.** Given market `USA`, the trace showed the agent calling `validate_approved_claim` with `US` instead and returning valid claims. The final answer looked reasonable. It was wrong: the caller's input had been silently corrected, and the final answer did not show it. Fix: the agent prompt now says to pass market, audience and date exactly as given, never to change, normalize or correct them, and never to retry a failed call with altered inputs. The validator already rejects `USA`, and inside the workflow IN1 rejects it before any agent runs, so the prompt rule protects direct use of the agent and any future caller. Re-run: `USA` (and later `GBR`) returned `invalid_request` with one tool call and no retry.
 
 **B. Chat produced a readiness verdict without running the workflow.** Once, Chat answered a readiness request with a plausible verdict of its own. The reply looked like a real result. Execution history showed no workflow run behind it: no IN1, no validator call, no RC3. Fix: the Intake Skill now says the workflow agent is the only way to run the check, forbids writing its own readiness summary, status or claim table, and says plainly when the workflow cannot be run. Proof: after the change, Chat readiness requests appear in execution history as workflow runs, and the reply carries the workflow's own state, findings and closing line.
 
@@ -62,3 +62,5 @@ So I claim no guardrail enforcement. Take-home volume is not enough history for 
 - Reviewer wording varies between runs on the same draft.
 - Delivery is at most once per request ID, not exactly once end to end.
 - Authorized tenant users can read run inputs, including inbound webhook headers, in execution logs.
+- Guardrails are still in Learning.
+- The target success measures (fewer late-stage revisions, shorter time to formal review, higher first-pass readiness) are intended, not yet measured.

@@ -1,6 +1,6 @@
 # Instructions and Skills
 
-The take-home asks for Instructions. The current Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. Both texts below were compared with the live tenant before publishing and match it.
+The take-home asks for Instructions. The current Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here the Intake Skill is that Main Agent. Both texts below were compared with the live tenant before publishing and match it.
 
 ## OptiThera Regulated Content Intake
 

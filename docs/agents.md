@@ -30,7 +30,7 @@ Export: [agents/Content-Readiness-Reviewer.json](../agents/Content-Readiness-Rev
 
 **Purpose.** Read the whole draft the way an experienced editor preparing it for formal review would, and list what would get it sent back.
 
-**Inputs.** `draft_content`, `market`, `audience`. The workflow runs it only after claim validation is usable.
+**Inputs.** `draft_content`, `market`, `audience`. The workflow runs it only after claim validation is usable. It does not receive the claim results, so it cannot defer to or second-guess the validator. RC3 is the only step that combines the two agents' outputs.
 
 **Outputs.** JSON: `blocking_findings` and a list of findings, each with a type (`clarity`, `completeness`, `audience_fit`, `disclaimer`, `consistency`), the exact quote, the issue, a suggestion, `blocking`, and an optional `suggested_revision`.
 

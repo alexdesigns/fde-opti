@@ -25,8 +25,8 @@ One bearer token authenticates the registry. It is stored in Optimizely AI's reg
 | Name | Type | Required | Notes |
 |---|---|---|---|
 | `claim_ids` | array of strings | yes | IDs as cited in the draft, 1 to 25. Duplicates are removed. |
-| `market` | string | yes | Two-letter country code. `USA` is rejected, not converted. |
-| `audience` | string | yes | `hcp` or `patient` |
+| `market` | string | yes | Two-letter country code. Case is folded (`us` becomes `US`); length and format are not, so `USA` is rejected, not converted. |
+| `audience` | string | yes | `hcp` or `patient`, case folded |
 | `as_of_date` | string | no | `YYYY-MM-DD`, must be a real date. Defaults to today (UTC). |
 
 Optimizely AI sends `{"parameters": {...}}`; the tool also accepts the bare object.

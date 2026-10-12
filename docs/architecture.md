@@ -9,7 +9,7 @@ The hard part was deciding where AI actually belongs. I settled on this split:
 - **Code controls state and routing.** Two Conditions and four Python code steps check inputs, route around failures, set the readiness state and deliver the result.
 - **People keep approval.** The best outcome is `READY_FOR_FORMAL_REVIEW`. Formal MLR approval happens outside this system.
 
-Only RC1 and RC2 call a model. The agents return structured findings; code sets the state from them, and every rule it applies is testable without a model.
+Only RC1 and RC2 are Specialized Agents. They return structured findings; code sets the state from them, and every rule it applies is testable without a model. The platform fills each code step's parameters from earlier outputs (marked `predicted` in the export), so the code re-checks what it receives: IN1 pattern-checks the values it echoes into the gate, RC3 refuses unreadable agent output, and RC4 refuses a malformed `request_id`.
 
 ## Entry points
 
@@ -24,7 +24,7 @@ The workflow does not know which product sent a request. A webhook caller sends 
 
 | Step | Type | Why it exists |
 |---|---|---|
-| IN1 - Validate - Request Context | code | Fail fast. A missing draft, a market that is not a two-letter code or an audience other than `hcp` or `patient` stops the run before any model is called. It also extracts the cited claim IDs (`[CLM-001]`) with a regex, so no model picks them. |
+| IN1 - Validate - Request Context | code | Fail fast. A missing draft, a market that is not a two-letter code or an audience other than `hcp` or `patient` stops the run before either agent runs. It also extracts the cited claim IDs (`[CLM-001]`) with a regex, so no model picks them. |
 | G1 - Gate - Inputs Complete? | condition | Routes `INPUTS_OK` to RC1 and everything else straight to RC3. Two explicit rows (contains / not contains) so no output can fall outside both. |
 | RC1 - Claims - Identification & Explanation | Specialized Agent | Calls `validate_approved_claim` once with the cited IDs, compares each cited sentence with the approved wording, lists claim-like statements that cite no ID, and explains each result. |
 | G2 - Gate - Claim Validation Usable? | condition | If validation status is not `ok` or `not_called`, skip review and go to RC3, which returns `VALIDATION_UNAVAILABLE`. Unknown is never treated as valid. |
@@ -40,5 +40,5 @@ RC5 passes every field exactly as RC4 packaged it. `submit_readiness_result` val
 ## What is not here
 
 - No automated approval and no publish step.
-- No model call in the validator, the gates or the code steps.
+- No model call inside the validator, the gates or the code-step logic.
 - The approved-claims register in this repo is a small fictional data set. In a real deployment the tool would read the customer's claims system, read-only.

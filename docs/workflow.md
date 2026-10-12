@@ -9,7 +9,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulat
 - **Purpose:** check inputs before anything else runs.
 - **Input:** `draft_content`, `market`, `audience`, `as_of_date` (Chat), or `webhook_payload` (webhook).
 - **Output:** `gate` (`INPUTS_OK`, `INPUT_REQUIRED` or `DUPLICATE_DELIVERED`), the list of missing inputs, normalized market and audience, and `cited_claim_ids` taken from the draft with the pattern `[CLM-nnn]`.
-- **Failure behavior:** missing or malformed input gives `INPUT_REQUIRED` and no model runs. Market must be a two-letter code; `USA` is rejected, not converted. Every value echoed into `gate` is pattern-checked, so text inside the draft cannot set the gate; the step tests include spoofing attempts.
+- **Failure behavior:** missing or malformed input gives `INPUT_REQUIRED` and neither agent runs. Market must be a two-letter code: case is folded (`us` becomes `US`), but `USA` is rejected, not converted. Every value echoed into `gate` is pattern-checked, so text inside the draft cannot set the gate; the step tests include spoofing attempts.
 
 ### G1 - Gate - Inputs Complete?
 - **Type:** condition
@@ -44,7 +44,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulat
 - **Input:** IN1 gate and context, the full RC1 output, the full RC2 output.
 - **Output:** `state`, a reason, claim and content findings, recommendations, and a Markdown report used for the Chat reply.
 - **Rules, in order:**
-  1. Gate is not `INPUTS_OK`: `INPUT_REQUIRED`.
+  1. Gate is not `INPUTS_OK`: `INPUT_REQUIRED`. A repeated ClickUp event (`DUPLICATE_DELIVERED`) also lands here internally; RC5 skips delivery, so nothing is shown.
   2. Claim output unreadable, validation not `ok` when IDs were cited, a status other than `not_called` when none were, or returned claim IDs that differ from the cited IDs: `VALIDATION_UNAVAILABLE`.
   3. Review output unreadable: `VALIDATION_UNAVAILABLE`.
   4. Every cited claim valid with matching wording, no uncited claim, no blocking content finding: `READY_FOR_FORMAL_REVIEW`.
@@ -77,4 +77,4 @@ There is no automated `APPROVED` state, and the step tests check that none appea
 
 ## Credits and timing
 
-Only RC1 and RC2 use a model, but orchestration is not free: in early runs, a run that stopped before either agent showed 8 credits on the execution page, and runs that reached both agents showed 18. Later V25 runs showed 20 to 22. These are the figures displayed by the tenant, not a computed cost model.
+Only RC1 and RC2 are agents, but orchestration is not free: in early runs, a run that stopped before either agent showed 8 credits on the execution page, and runs that reached both agents showed 18. Later V25 runs showed 20 to 22, and V25 ClickUp runs that skipped both agents showed 12. These are the figures displayed by the tenant, not a computed cost model.
