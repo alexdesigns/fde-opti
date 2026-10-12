@@ -66,7 +66,7 @@ export const APPROVED_CLAIMS: ApprovedClaim[] = [
     source_reference: "PACK-2025-02",
   },
   {
-    // Earlier wording of Claim A, replaced by CLM-001 v2.
+    // Earlier wording of Claim A, replaced by the current CLM-001 wording.
     claim_id: "CLM-004",
     claim_text: "OptiThera is indicated for adults with plaque psoriasis.",
     product: "OptiThera",

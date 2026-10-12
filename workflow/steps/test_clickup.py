@@ -158,9 +158,9 @@ check("fail closed: a malformed task id is INPUT_REQUIRED and reads nothing", ou
 # --- sources other than ClickUp are unchanged
 fresh()
 out = intake({"draft_content": "x [CLM-001]", "market": "us", "audience": "HCP"}, {})
-check("direct: Chat or Lab input behaves as before and reads nothing", out["gate"] == "INPUTS_OK" and out["source"] == "direct" and not calls and out["draft_content"] == "")
+check("direct: Chat or webhook input behaves as before and reads nothing", out["gate"] == "INPUTS_OK" and out["source"] == "direct" and not calls and out["draft_content"] == "")
 out = intake({"webhook_payload": {"request_id": "x", "draft_content": "d"}, "draft_content": "d", "market": "US", "audience": "hcp"}, {})
-check("direct: a Lab-shaped webhook body is not mistaken for ClickUp", out["source"] == "direct")
+check("direct: a callback-style webhook body is not mistaken for ClickUp", out["source"] == "direct")
 
 # --- packager
 DECISION = {"state": "NEEDS_REVISION", "claim_issues": [{"claim_id": "CLM-001", "draft_text": "Take OptiThera.", "tool_outcome": "valid", "explanation": "Wording differs.", "wording_matches": False}], "unresolved_candidate_claims": [], "findings": []}
@@ -175,7 +175,7 @@ def intake_for(**over):
 
 pkg = package({"request_id": "", "decision_output": json.dumps(DECISION), "intake_output": intake_for()}, {})
 check("package: carries the ClickUp source and keys", pkg["source"] == "clickup" and pkg["task_id"] == "86a0test1" and len(pkg["delivery_key"]) == 16)
-check("package: no Lab callback for a ClickUp run", pkg["callback"] == "not_required")
+check("package: no callback for a ClickUp run", pkg["callback"] == "not_required")
 check("package: state is unchanged by the source", pkg["status"] == "NEEDS_REVISION")
 check("package: no draft text travels", "draft_content" not in pkg)
 direct = package({"request_id": "", "decision_output": json.dumps(DECISION), "intake_output": json.dumps({"source": "direct"})}, {})
@@ -391,13 +391,13 @@ check("handoff: READY asks for a reviewer to be assigned because none is modeled
 
 # --- source routing
 fresh()
-LAB = {"callback": "required", "request_id": "aaaaaaaa-1111-4111-8111-000000000001", "status": "NEEDS_REVISION", "summary": "s", "validation_status": "ok",
+CALLBACK_REQ = {"callback": "required", "request_id": "aaaaaaaa-1111-4111-8111-000000000001", "status": "NEEDS_REVISION", "summary": "s", "validation_status": "ok",
        "formal_review_required": True, "checked_at": "2026-10-09T00:00:00Z", "findings": [], "source": "direct"}
 sdk.tools.call = lambda name, **kw: (calls.append((name, kw)) or {"response_type": "application/json", "response": {"status": "ok"}})
-out = deliver({"packager_output": json.dumps(LAB)}, {})
-check("routing: lab still goes to submit_readiness_result only", out["delivery"] == "delivered" and [c[0] for c in calls] == ["submit_readiness_result"])
+out = deliver({"packager_output": json.dumps(CALLBACK_REQ)}, {})
+check("routing: a callback request still goes to submit_readiness_result only", out["delivery"] == "delivered" and [c[0] for c in calls] == ["submit_readiness_result"])
 calls.clear()
-out = deliver({"packager_output": json.dumps({**LAB, "callback": "not_required", "request_id": ""})}, {})
+out = deliver({"packager_output": json.dumps({**CALLBACK_REQ, "callback": "not_required", "request_id": ""})}, {})
 check("routing: chat delivers nothing", out["delivery"] == "skipped" and not calls)
 
 

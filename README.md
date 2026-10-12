@@ -68,7 +68,7 @@ The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent
 | Custom Tool | `validate_approved_claim` | [tools/validate-approved-claim](tools/validate-approved-claim) |
 | Custom Tool | `submit_readiness_result` | [tools/submit-readiness-result](tools/submit-readiness-result) |
 
-The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; nothing else was changed.
+The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`, and a few code comments and one error message were lightly reworded for this package; the logic is unchanged.
 
 ## How a request runs
 

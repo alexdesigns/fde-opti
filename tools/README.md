@@ -1,6 +1,6 @@
 # Custom tool service
 
-The source for `validate_approved_claim`, `submit_readiness_result` and the discovery route, as a small Next.js app. These are the files that run in production. What changed for this repository: import paths, the bearer-token check moved from a larger module into `shared/token.ts` unchanged, unrelated service names removed from one test, and a test that guards the published examples. In production they run inside a small hosted web app, which the code and the live tool descriptions call "the Lab".
+The source for `validate_approved_claim`, `submit_readiness_result` and the discovery route, as a small Next.js app. These are the files that run in production. What changed for this repository: import paths, the bearer-token check moved from a larger module into `shared/token.ts` unchanged, unrelated service names removed from one test, and a test that guards the published examples. In production they run inside a small hosted web app.
 
 ```
 app/fde-opti/discovery/route.ts                        GET  /fde-opti/discovery

@@ -369,7 +369,7 @@ export const CALLBACK_DISCOVERY = {
     {
       name: "submit_readiness_result",
       description:
-        "Reports one finished readiness result back to the Lab so the requesting system can retrieve it. Call it exactly once, after the readiness decision, and only when a request_id was supplied. Pass every value exactly as given by the Result Packager step: do not edit, summarize or add to any field, and never include draft text. It stores the result and returns ok or an error. It does not decide readiness, approve content or publish anything.",
+        "Reports one finished readiness result back to the readiness service so the requesting system can retrieve it. Call it exactly once, after the readiness decision, and only when a request_id was supplied. Pass every value exactly as given by the Result Packager step: do not edit, summarize or add to any field, and never include draft text. It stores the result and returns ok or an error. It does not decide readiness, approve content or publish anything.",
       parameters: [
         { name: "request_id", type: "string", description: "The request_id supplied with the request, exactly as given.", required: true },
         { name: "status", type: "string", description: "The readiness state exactly as given: INPUT_REQUIRED, NEEDS_REVISION, READY_FOR_FORMAL_REVIEW or VALIDATION_UNAVAILABLE.", required: true },
