@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "request_id": "3f6c2a9e-8d41-4b7a-9c25-1e0f7d5b8a64",
+  "status": "NEEDS_REVISION",
+  "summary": "1 item to resolve before formal review.",
+  "validation_status": "ok",
+  "formal_review_required": true,
+  "checked_at": "2026-10-09T14:05:00.000Z",
+  "findings": [
+    {
+      "type": "claim_wording",
+      "severity": "blocking",
+      "quote": "OptiThera is indicated for adults with plaque psoriasis.",
+      "issue": "CLM-001 is valid for US patients, but the draft drops \"moderate to severe\" and so widens the approved indication.",
+      "suggestion": "Change the wording to match the approved claim, or remove the statement.",
+      "recommendation": {
+        "suggested_revision": "OptiThera is indicated for adults with moderate to severe plaque psoriasis.",
+        "reason": "CLM-001 is valid for US patients, but the draft drops \"moderate to severe\" and so widens the approved indication.",
+        "recommendation_basis": "approved_claim",
+        "human_review_required": true,
+        "original_text": "OptiThera is indicated for adults with plaque psoriasis.",
+        "source_reference": "CLM-001"
+      }
+    }
+  ]
+}

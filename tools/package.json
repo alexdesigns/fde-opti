@@ -1,0 +1,27 @@
+{
+  "name": "optithera-readiness-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom Optimizely AI tools for OptiThera Regulated Content Readiness: validate_approved_claim and submit_readiness_result.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "rm -rf .test-build && tsc validate-approved-claim/validate.test.ts submit-readiness-result/readiness-result.test.ts shared/registry.test.ts shared/examples.test.ts --outDir .test-build --module commonjs --target es2022 --moduleResolution node --skipLibCheck --types node --strict && node --test \".test-build/**/*.test.js\""
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.1",
+    "next": "16.3.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
