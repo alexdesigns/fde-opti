@@ -2,7 +2,7 @@
 
 The take-home asks for Instructions. The Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here IN0 is that Main Agent. The two texts in [instructions/](../instructions) are the tenant texts for the versions named below.
 
-## IN0 - OptiThera Content Intake (V10)
+## IN0 - OptiThera Content Intake (V16)
 
 Text: [instructions/IN0-OptiThera-Content-Intake.txt](../instructions/IN0-OptiThera-Content-Intake.txt)
 

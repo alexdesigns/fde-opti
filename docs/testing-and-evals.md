@@ -36,7 +36,7 @@ I also ran the main cases (a ready draft, wording drift, missing input) against 
 
 Optimizely AI has a built-in Output Evaluation feature that scores agent runs against criteria. I configured criteria on both agents: nine on RC1 and seven on RC2. They ship in the agent exports and cover grounding, never inventing claim IDs, passing inputs unchanged, telling HCP and patient language apart, and never implying approval.
 
-I could not run the built-in evaluation on the final versions. The UI path I found did not expose execution, so there are no platform-evaluated runs and I show no scores. I would rather say that than imply a number.
+No single-turn evaluation examples are attached, and the current agent versions list their runs as Not Evaluated. There are no platform-evaluated runs and I show no scores. I would rather say that than imply a number.
 
 What I did instead was test the agents directly and read the outputs against each case:
 
@@ -70,5 +70,8 @@ One observation: a stalled run made a second validator call on its own. I read t
 - The callback has no trustworthy caller-provenance signal from the platform. Its controls are the bearer token, an unguessable pending request ID, a strict schema, first-result-wins and a 24 hour expiry.
 - Authorized tenant users, and Chat, can read run inputs, including inbound webhook headers, in execution logs. "Enabled in Chat" off is not a security boundary.
 - Delivery is at most once per request ID, not exactly once end to end.
-- Built-in output evaluation criteria are configured, but I could not run them through the UI path I found.
+- Built-in output evaluation criteria are configured, but the current versions show no platform-scored runs.
+- Chat starts the check on `/content-readiness` or a clear request. A bare "yes" after the intake has the inputs is not a reliable trigger on this platform, so it does not start a run.
+- Chat input is not guaranteed byte-preserving. Some Chat runs normalized whitespace, while every word and its order stayed intact in the tested drafts. The ClickUp path and the WordPress gateway to workflow path matched their sources byte for byte in the verified runs.
+- Chat can fill an as-of date the user did not give. The workflow uses whatever date reaches it.
 - The target success measures (fewer late-stage revisions, shorter time to formal review, higher first-pass readiness) are targets, not measured results.

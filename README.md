@@ -5,7 +5,7 @@ Built by Alex Harris for the Optimizely Forward Deployed Engineer take-home. A g
 OptiThera is a fictional pharmaceutical brand. Every claim, market and draft in this repository is fictional.
 
 - Live documentation and demo: https://lab.alexdesigns.com/fde-opti
-- Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/tag/v1.1-fde-final
+- Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/tag/v1.2-fde-final
 
 ## Problem
 
@@ -61,7 +61,7 @@ The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent
 
 | Assignment concept | Component (exact name) | Version | File |
 |---|---|---|---|
-| Instructions / Main Agent | IN0 - OptiThera Content Intake (primary Skill, shortcut `/content-readiness`) | V10 | [instructions/IN0-OptiThera-Content-Intake.txt](instructions/IN0-OptiThera-Content-Intake.txt) |
+| Instructions / Main Agent | IN0 - OptiThera Content Intake (primary Skill, shortcut `/content-readiness`) | V16 | [instructions/IN0-OptiThera-Content-Intake.txt](instructions/IN0-OptiThera-Content-Intake.txt) |
 | Instructions (supporting) | RC1-RC2 - Regulatory Review Policy (Skill, `@regulated-readiness-standard`) | V4 | [instructions/RC1-RC2-Regulatory-Review-Policy.txt](instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
 | Specialized Agent | RC1 - Claim Identification & Explanation Agent | V5 | [agents/RC1-Claim-Identification-and-Explanation-Agent.json](agents/RC1-Claim-Identification-and-Explanation-Agent.json) |
 | Specialized Agent | RC2 - Draft Risk Reviewer | V7 | [agents/RC2-Draft-Risk-Reviewer.json](agents/RC2-Draft-Risk-Reviewer.json) |
@@ -86,7 +86,9 @@ The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; not
 - Reviewer judgment can vary on borderline drafts. Routing and state rules do not, because code owns them.
 - When a draft cites no claim ID the validator is not called, and the packaged validation status still reads `ok`. Nothing was checked against the register in that case. Uncited claims still produce `NEEDS_REVISION`.
 - The callback endpoint is protected by a bearer token, an unguessable pending request ID, a strict schema, first-result-wins and a 24 hour expiry. The platform gives no trustworthy caller-identity signal, so I do not claim verified Optimizely origin.
-- Built-in output evaluation criteria are configured on both agents. The UI path I found did not let me run them, so I validated with direct repeated runs.
+- Chat starts the check on `/content-readiness` or a clear request such as "run content readiness". A bare "yes" is not a reliable trigger on this platform, so it does not start a run.
+- Chat input is not guaranteed byte-preserving: some Chat runs normalized whitespace, while every word and its order stayed intact in the tested drafts. Chat can also fill an as-of date the user did not give.
+- Output evaluation criteria are configured on both agents (nine on RC1, seven on RC2), but no single-turn examples are attached and the current versions list their runs as Not Evaluated. I validated with direct repeated runs and UAT.
 - Success measures in the write-up are targets, not measured business results.
 
 ## Repository contents
