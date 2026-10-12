@@ -1,6 +1,6 @@
 # validate_approved_claim
 
-Checks the claim IDs cited in a draft against the approved-claims register for one market, one audience and an as-of date. Only the Claim Identification & Explanation Agent calls it, once per run with every cited ID. No model runs inside it.
+Checks the claim IDs cited in a draft against the approved-claims register for one market, one audience and an as-of date. Only RC1 - Claim Identification & Explanation Agent calls it, once per run with every cited ID. No model runs inside it.
 
 Inputs, outputs, examples and failure behavior: [docs/tools.md](../../docs/tools.md#validate_approved_claim).
 

@@ -21,9 +21,9 @@ A `recommendation` can sit on a blocking finding of a `NEEDS_REVISION` result:
 |---|---|---|
 | `approved_claim` | Approved wording | The validator's `approved_text`, quoted unchanged. Used when a cited claim is valid but the draft's wording drifted. |
 | `required_disclaimer` | Required disclaimer | The validator's `required_disclaimer`, quoted unchanged. A model never writes disclaimer wording. |
-| `contextual_rewrite` | Suggested rewrite (not approved copy) | The Content Readiness Reviewer's `suggested_revision`. It may soften an absolute, narrow a scope or clarify. It may not add a claim, number, safety statement, comparison or disclaimer. |
+| `contextual_rewrite` | Suggested rewrite (not approved copy) | RC2's `suggested_revision`. It may soften an absolute, narrow a scope or clarify. It may not add a claim, number, safety statement, comparison or disclaimer. |
 
-RC3 assembles these in code. The Reviewer cannot label its own text as approved wording: only the validator's data can produce the two governed bases, and the tool contract rejects a governed recommendation without a `source_reference`.
+RC3 assembles these in code. RC2 cannot label its own text as approved wording: only the validator's data can produce the two governed bases, and the tool contract rejects a governed recommendation without a `source_reference`.
 
 ## When there is no recommendation
 
@@ -31,7 +31,7 @@ RC3 assembles these in code. The Reviewer cannot label its own text as approved 
 - **`INPUT_REQUIRED`**: nothing was checked, so there are no findings and no rewrites.
 - **`VALIDATION_UNAVAILABLE`**: claims could not be checked, so no correction is invented.
 - **`READY_FOR_FORMAL_REVIEW`**: may carry advisory findings, never a blocking rewrite. The tool contract rejects a ready result with a recommendation.
-- **No safe rewrite**: if any replacement would be a new claim (for example for "safe for everyone"), the Reviewer leaves it empty.
+- **No safe rewrite**: if any replacement would be a new claim (for example for "safe for everyone"), RC2 leaves it empty.
 
 When two claims in one draft carry different required disclaimers, no single disclaimer recommendation is made.
 

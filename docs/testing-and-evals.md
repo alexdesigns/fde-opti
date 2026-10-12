@@ -12,7 +12,7 @@ The gates, the state rules, packaging, delivery and both tools are code, so they
 | [workflow/steps/test_delivery.py](../workflow/steps/test_delivery.py) | 16 | RC5 routing by source: Chat, callback, ClickUp |
 | [workflow/steps/test_clickup.py](../workflow/steps/test_clickup.py) | 96 | The ClickUp path end to end against a stubbed connector: reading the task and draft Doc, fields, comment, status, duplicate events |
 | [workflow/steps/test_examples.py](../workflow/steps/test_examples.py) | 1 | The published request example passes IN1 |
-| `npm test` in [tools/](../tools) | 55 | Validator rules and input rejection, result contract, store create, complete, duplicate, conflict and expiry, registry auth, the published result examples |
+| `npm test` in [tools/](../tools) | see `npm test` output | Validator rules and input rejection, result contract, store create, complete, duplicate, conflict and expiry, registry auth, the published result examples |
 
 Run them:
 
@@ -23,7 +23,7 @@ cd tools && npm install && npm test
 
 What the tests and the live runs establish, by behavior:
 
-- **Trigger and non-trigger.** In Chat this lives in the Intake Skill (see [instructions-and-skills.md](instructions-and-skills.md)). On ClickUp, only a move to Internal Review starts a run. On WordPress, autosave, an unchanged save and a double-click do not start extra runs.
+- **Trigger and non-trigger.** In Chat this lives in IN0 (see [instructions-and-skills.md](instructions-and-skills.md)). On ClickUp, only a move to Internal Review starts a run. On WordPress, autosave, an unchanged save and a double-click do not start extra runs.
 - **Input validation.** Missing draft, market or audience gives `INPUT_REQUIRED` before either agent runs. `USA` is rejected, not converted.
 - **Canonical states.** Exactly four. The step tests check that no approved state is produced.
 - **Delivery.** Chat needs no callback; a webhook with a valid `request_id` calls `submit_readiness_result`; ClickUp writes fields, then the comment, then the status.
@@ -32,35 +32,43 @@ What the tests and the live runs establish, by behavior:
 
 I also ran the main cases (a ready draft, wording drift, missing input) against the live workflow from Chat, the webhook gateway, ClickUp and WordPress, and checked the trigger matrix on a private, unpublished test page in the production WordPress installation: no run with auto-run off, one run per meaningful update with it on, none on an unchanged save or an autosave, and one run for a double-click. Run counts come from Optimizely AI execution history.
 
-## 2. Output evaluation
+## 2. Output evaluation and direct regression testing
 
-Optimizely AI's Output Evaluation scores agent runs against criteria with a model as judge. I configured criteria on both agents (nine for the Claim agent, seven for the Reviewer; they ship in the agent exports) covering grounding, never inventing claim IDs, passing inputs unchanged, telling HCP and patient language apart, and never implying approval.
+Optimizely AI has a built-in Output Evaluation feature that scores agent runs against criteria. I configured criteria on both agents: nine on RC1 and seven on RC2. They ship in the agent exports and cover grounding, never inventing claim IDs, passing inputs unchanged, telling HCP and patient language apart, and never implying approval.
 
-In this tenant, scoring did not run with criteria alone; it needed an example attached to the agent. Examples attach to the agent, not to a case, so the judge compared every run with that one example. A correct empty result was marked down for missing another draft's findings. A correct no-ID result scored 15% for "missing" a claim that was not in the input. A quote that was in the draft was called a hallucination. With one unrelated HCP example attached, the judge marked a patient run down for treating the content as patient-facing.
+I could not run the built-in evaluation on the final versions. The UI path I found did not expose execution, so there are no platform-evaluated runs and I show no scores. I would rather say that than imply a number.
 
-So I treated eval scores as evidence to inspect, not as truth. I read the outputs directly against each case. On that reading the Claim agent was correct on all seven cases in the first round and all six in the second, including the `USA` regression and the no-ID case, and the Reviewer was correct on five of six cases in the first round. The sixth was one draft where it repeatedly raised a patient-audience finding whose blocking flag varied between identical runs. I recorded that as draft-specific variance and did not tune for it. Semantic quality, authority boundaries and recommendation framing were judged the same way: by reading what the agent wrote against the criteria.
+What I did instead was test the agents directly and read the outputs against each case:
+
+- Five identical controlled ClickUp runs of the same draft returned `READY_FOR_FORMAL_REVIEW` 5 of 5, with RC1 correct 5 of 5, identical routing, and one workflow invocation and one validator call per run.
+- An RC2 safety regression of six controlled cases passed.
+- Earlier on the same draft, RC2 once returned a conservative `NEEDS_REVISION` on the safety section. I recorded it as reviewer judgment variance and did not tune for it. See the known limits below.
+
+This is evidence from direct runs. It is not a platform quality score.
 
 ## 3. Execution tracing
 
 Two real findings came from reading execution history rather than results.
 
-**A. The Claim agent rewrote an invalid market.** Given market `USA`, the trace showed the agent calling `validate_approved_claim` with `US` instead and returning valid claims. The final answer looked reasonable. It was wrong: the caller's input had been silently corrected, and the final answer did not show it. Fix: the agent prompt now says to pass market, audience and date exactly as given, never to change, normalize or correct them, and never to retry a failed call with altered inputs. The validator already rejects `USA`, and inside the workflow IN1 rejects it before any agent runs, so the prompt rule protects direct use of the agent and any future caller. Re-run: `USA` (and later `GBR`) returned `invalid_request` with one tool call and no retry.
+**A. RC1 rewrote an invalid market.** Given market `USA`, the trace showed the agent calling `validate_approved_claim` with `US` instead and returning valid claims. The final answer looked reasonable. It was wrong: the caller's input had been silently corrected, and the final answer did not show it. Fix: the agent prompt now says to pass market, audience and date exactly as given, never to change, normalize or correct them, and never to retry a failed call with altered inputs. The validator already rejects `USA`, and inside the workflow IN1 rejects it before any agent runs, so the prompt rule protects direct use of the agent and any future caller. Re-run: `USA` (and later `GBR`) returned `invalid_request` with one tool call and no retry.
 
-**B. Chat produced a readiness verdict without running the workflow.** Once, Chat answered a readiness request with a plausible verdict of its own. The reply looked like a real result. Execution history showed no workflow run behind it: no IN1, no validator call, no RC3. Fix: the Intake Skill now says the workflow agent is the only way to run the check, forbids writing its own readiness summary, status or claim table, and says plainly when the workflow cannot be run. Proof: after the change, Chat readiness requests appear in execution history as workflow runs, and the reply carries the workflow's own state, findings and closing line.
+**B. Chat produced a readiness verdict without running the workflow.** Once, Chat answered a readiness request with a plausible verdict of its own. The reply looked like a real result. Execution history showed no workflow run behind it: no IN1, no validator call, no RC3. Fix: IN0 now says the workflow agent is the only way to run the check, forbids writing its own readiness summary, status or claim table, and says plainly when the workflow cannot be run. Proof: after the change, Chat readiness requests appear in execution history as workflow runs, and the reply carries the workflow's own state, findings and closing line.
 
 The rule I took from both: for any result that matters, check that a matching execution exists and that it called what it should have.
 
 ## 4. Guardrails
 
-Guardrails in Optimizely AI watch agent behavior per agent version, moving from Learning to Watching to Enforcing as run history builds up. I left the defaults. The direct agent runs I checked show Learning (one Reviewer run shows Passed), and runs inside the workflow show no guardrail value. No tenant-level Input Guardrails are configured. Each new agent version restarts learning, and the Reviewer was on V5 when exported.
+Guardrails in Optimizely AI watch agent behavior per agent version. Both agents are Enforcing, with auto-stop on and sensitivity 1. I did not promote them by hand. The platform progressed them on its own as run history built up; RC2 moved from its earlier monitoring stage to Enforcing during final verification. I did not tune sensitivity.
 
-So I claim no guardrail enforcement. Take-home volume is not enough history for the platform to learn normal behavior, and I did not raise sensitivity to make the feature look active. One observation for when it matters: a stalled run made a second validator call on its own. I read that as platform retry behavior, and it is the kind of thing Watching mode should flag. Moving beyond Learning is on my list of next steps, once there is real run history.
+One observation: a stalled run made a second validator call on its own. I read that as platform retry behavior.
 
 ## Known limits
 
-- The required disclaimer is checked by the Reviewer, not by code. A deterministic presence check is a next step.
-- Reviewer wording varies between runs on the same draft.
+- The required disclaimer is checked by RC2, not by code. A deterministic presence check is a next step.
+- RC2's judgment varies on borderline drafts. The routing and the state rules are code and do not vary. I make no claim that model judgment is deterministic.
+- When a draft cites no claim ID, the validator is not called and the packaged `validation_status` still reads `ok`. Nothing was checked against the register in that case. Uncited claims still produce `NEEDS_REVISION`.
+- The callback has no trustworthy caller-provenance signal from the platform. Its controls are the bearer token, an unguessable pending request ID, a strict schema, first-result-wins and a 24 hour expiry.
+- Authorized tenant users, and Chat, can read run inputs, including inbound webhook headers, in execution logs. "Enabled in Chat" off is not a security boundary.
 - Delivery is at most once per request ID, not exactly once end to end.
-- Authorized tenant users can read run inputs, including inbound webhook headers, in execution logs.
-- Guardrails are still in Learning.
-- The target success measures (fewer late-stage revisions, shorter time to formal review, higher first-pass readiness) are intended, not yet measured.
+- Built-in output evaluation criteria are configured, but I could not run them through the UI path I found.
+- The target success measures (fewer late-stage revisions, shorter time to formal review, higher first-pass readiness) are targets, not measured results.

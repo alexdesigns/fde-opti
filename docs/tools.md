@@ -5,7 +5,7 @@ Both tools are served by one tool registry in Optimizely AI, named "OptiThera Re
 | | `validate_approved_claim` | `submit_readiness_result` |
 |---|---|---|
 | Endpoint | `POST /fde-opti/tools/validate-approved-claim` | `POST /fde-opti/tools/submit-readiness-result` |
-| Called by | RC1, the Claim Identification & Explanation Agent | RC5, the delivery code step |
+| Called by | RC1 - Claim Identification & Explanation Agent | RC5, the delivery code step |
 | Decides | Governed claim facts | Nothing. It delivers. |
 | Model inside | None | None |
 | Hosting | Next.js route on Vercel | Next.js route on Vercel |
@@ -63,7 +63,7 @@ Optimizely AI sends `{"parameters": {...}}`; the tool also accepts the bare obje
 
 **Failure behavior.** A malformed request returns HTTP 400 with `status: invalid_request` and a plain error message, which reaches the agent. If the claims source cannot be read, HTTP 503 with `status: validation_unavailable` and no results. `all_valid` is never true on an error. The route logs claim IDs, market, audience, outcomes and duration, never draft text.
 
-**What it does not do.** It does not perform formal MLR approval and does not read prose. It checks only IDs that are written in the draft.
+**What it does not do.** It does not perform formal MLR approval and does not read prose. It checks only IDs that are written in the draft. When a draft cites no ID, RC1 does not call it, and nothing is checked against the register for that run.
 
 **The register.** [approved-claims.ts](../tools/validate-approved-claim/approved-claims.ts) is a fictional four-claim register built to exercise each rule: CLM-001 valid for US, both audiences; CLM-002 valid for US and UK, HCP only; CLM-003 expired; CLM-004 superseded by CLM-001. In a real deployment `validateClaims` takes a different `loadClaims` that reads the customer's claims system, read-only.
 
@@ -107,7 +107,7 @@ Optimizely AI may send arrays and nested objects as JSON text and booleans as st
 | A different result already stored for the ID | 409 | `conflict` |
 | Store unreachable | 503 | |
 
-**Callback authentication is server-side.** The bearer token lives in Optimizely AI and the service environment. No browser, CMS page or extension ever holds it.
+**Callback security.** The controls are: the registry bearer token (held by Optimizely AI and the service environment, never by a browser, CMS page or extension), an unguessable pending `request_id` issued when the request was accepted, a strict schema, first result wins (a different second result is rejected with 409), and a 24 hour expiry. The platform does not give the tool a trustworthy signal about who is calling, so I do not claim the callback is verified as coming from Optimizely. Authorized tenant users, and Chat, can read run inputs, so "Enabled in Chat" being off is not a security boundary.
 
 **Result store.** Only the normalized result is stored, never the draft. Production uses a private Vercel Blob store with create-if-absent writes and compare-and-swap completion, so one request ID is completed at most once. Local runs use a file store. Delivery is at most once per request ID, not exactly once end to end.
 

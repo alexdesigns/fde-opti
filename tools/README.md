@@ -24,7 +24,7 @@ Node.js 20 or later, npm.
 cd tools
 npm install
 cp .env.example .env.local      # then set OPTITHERA_REGULATED_REGISTRY_TOKEN to any long random value
-npm test                        # 55 unit tests, no network, no model
+npm test                        # unit tests, no network, no model
 npm run build && npm start      # serves on port 3000
 ```
 

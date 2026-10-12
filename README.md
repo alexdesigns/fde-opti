@@ -1,42 +1,50 @@
 # OptiThera Regulated Content Readiness
 
-A governed agent workflow built in Optimizely AI (Opal) that identifies regulated claims, verifies them against governed claim records, reviews the draft in context and returns a controlled readiness state before formal Medical, Legal and Regulatory (MLR) review.
+Built by Alex Harris for the Optimizely Forward Deployed Engineer take-home. A governed agent workflow in Optimizely AI that finds regulated claims, checks them against governed claim records, reviews the draft in context and returns one of four readiness states before formal Medical, Legal and Regulatory (MLR) review.
 
-This is my submission for the Optimizely Forward Deployed Engineer take-home. OptiThera is a fictional pharmaceutical brand, and every claim, market and draft in this repository is fictional.
+OptiThera is a fictional pharmaceutical brand. Every claim, market and draft in this repository is fictional.
+
+- Live documentation and demo: https://lab.alexdesigns.com/fde-opti
+- Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/tag/v1.1-fde-final
 
 ## Problem
 
-Marketing teams often find claim, context and readiness issues after briefs, content and page work are already underway. A brief gets written, copy gets drafted, a page gets built, and only then does formal review find an unapproved claim, wording that drifted from the approved version, or a missing disclaimer. The work goes back, and MLR reviewers spend time on drafts that were never ready for them.
+Marketing teams often find claim, context and readiness issues after briefs, copy and page work are already underway. Formal review then rejects the draft for an unapproved claim, wording that drifted from the approved version, or a missing disclaimer. The work goes back, and reviewers spend time on content that was never ready for them.
 
 ## Solution
 
-I moved a readiness check upstream, into the places marketers already work, and split the job by what each part is good at:
+I moved the readiness check upstream, into the places marketers already work: Optimizely AI Chat, ClickUp and WordPress. One governed workflow identifies claims, verifies them against an approved-claims source, reviews the draft in context and returns the result.
+
+The split that matters:
 
 - AI interprets the content: which sentences are claims, and whether the draft reads right for its audience.
 - Tools verify governed facts: whether a claim is approved, in date and allowed for this market and audience, and what its approved wording and disclaimer are.
-- Workflow code controls state and routing: four allowed states, decided by fixed rules.
-- Formal approval stays with people. Nothing here approves content.
+- Workflow code controls validation, routing and state.
+- People approve. `READY_FOR_FORMAL_REVIEW` is not approval. There is no approved state, and formal MLR approval stays with people.
 
 ## Architecture
 
 ```
-Optimizely AI Chat (TR1)        Webhook: ClickUp, WordPress, other systems (TR2)
-            \                      /
-             IN1  Validate request context          code
-             G1   Inputs complete?                  condition ── no ──┐
-             RC1  Claim Identification & Explanation Agent            │
-                    └─ validate_approved_claim (custom tool)          │
-             G2   Claim validation usable?          condition ── no ──┤
-             RC2  Content Readiness Reviewer                          │
-             RC3  Decide readiness state            code  <───────────┘
-             RC4  Package readiness result          code
-             RC5  Deliver result                    code
-                    └─ submit_readiness_result (custom tool), ClickUp connector, or Chat reply
+TR1 - Trigger - Chat                  TR2 - Trigger - Webhook
+(Optimizely AI Chat, IN0)             (ClickUp, WordPress, other systems)
+            \                          /
+             IN1  Validate - Request Context           code
+             G1   Gate - Inputs Complete?              condition ── no ──┐
+             RC1  Claims - Identification & Explanation                  │
+                    agent, calls validate_approved_claim once            │
+             G2   Gate - Claim Validation Usable?      condition ── no ──┤
+             RC2  Review - Content Readiness           agent             │
+             RC3  Decision - Readiness State           code  <───────────┘
+             RC4  Package - Readiness Result           code
+             RC5  Deliver - External Result            code
+                    submit_readiness_result, ClickUp connector, or Chat reply
 ```
+
+The step names are the live names in the tenant. IN0 is the Chat instruction. IN1 is the first workflow step. RC1 and RC2 are the two specialized agents, and RC3 to RC5 are the code steps that decide, package and deliver. G1 and G2 are the two gates. There are eight steps: two agents, two gates and four code steps (IN1, RC3, RC4, RC5), plus two triggers.
 
 Details: [docs/architecture.md](docs/architecture.md) and [docs/workflow.md](docs/workflow.md).
 
-## Canonical states
+## States
 
 RC3 returns exactly one of four states, set by fixed rules in code:
 
@@ -47,48 +55,53 @@ RC3 returns exactly one of four states, set by fixed rules in code:
 | `VALIDATION_UNAVAILABLE` | Claims could not be checked, so nothing is reported as ready. |
 | `READY_FOR_FORMAL_REVIEW` | Every cited claim valid with matching wording, no blocking content issue. |
 
-There is no approved state.
-
 ## Assignment-to-component mapping
 
-The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent Workflows and Tools. The current Optimizely AI interface calls Instructions "Skills". This table maps one to the other.
+The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent Workflows and Tools. The Optimizely AI interface calls Instructions "Skills". Names and versions below are exactly as built in the tenant.
 
-| Assignment concept | Component (exact name) | Purpose | Artifact |
+| Assignment concept | Component (exact name) | Version | File |
 |---|---|---|---|
-| Instructions / Main Agent | OptiThera Regulated Content Intake (Primary Instruction / Skill) | Gathers draft, market and audience in Chat and runs the workflow only on a clear request | [instructions/OptiThera-Regulated-Content-Intake.txt](instructions/OptiThera-Regulated-Content-Intake.txt) |
-| Instructions (shared) | Regulated Content Review Standard (Shared Instruction / Skill) | One review standard and authority boundary used by both agents | [instructions/Regulated-Content-Review-Standard.txt](instructions/Regulated-Content-Review-Standard.txt) |
-| Specialized Agent | Claim Identification & Explanation Agent | Validates cited claim IDs with the tool and explains each result | [agents/Claim-Identification-Explanation-Agent.json](agents/Claim-Identification-Explanation-Agent.json) |
-| Specialized Agent | Content Readiness Reviewer | Reviews the full draft in context and returns structured findings | [agents/Content-Readiness-Reviewer.json](agents/Content-Readiness-Reviewer.json) |
-| Agent Workflow | Regulated Content Readiness Workflow | Orders the steps, gates on inputs and validation, sets the state in code | [workflow/Regulated-Content-Readiness-Workflow.json](workflow/Regulated-Content-Readiness-Workflow.json) |
-| Tool Integration / Custom Tool | `validate_approved_claim` | Deterministic lookup of governed claim facts | [tools/validate-approved-claim](tools/validate-approved-claim) |
-| Tool Integration / Custom Tool | `submit_readiness_result` | Returns the packaged result to callback-based integrations | [tools/submit-readiness-result](tools/submit-readiness-result) |
+| Instructions / Main Agent | IN0 - OptiThera Content Intake (primary Skill, shortcut `/content-readiness`) | V10 | [instructions/IN0-OptiThera-Content-Intake.txt](instructions/IN0-OptiThera-Content-Intake.txt) |
+| Instructions (supporting) | RC1-RC2 - Regulatory Review Policy (Skill, `@regulated-readiness-standard`) | V4 | [instructions/RC1-RC2-Regulatory-Review-Policy.txt](instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
+| Specialized Agent | RC1 - Claim Identification & Explanation Agent | V5 | [agents/RC1-Claim-Identification-and-Explanation-Agent.json](agents/RC1-Claim-Identification-and-Explanation-Agent.json) |
+| Specialized Agent | RC2 - Draft Risk Reviewer | V7 | [agents/RC2-Draft-Risk-Reviewer.json](agents/RC2-Draft-Risk-Reviewer.json) |
+| Agent Workflow | Regulated Content Readiness Workflow | V25 | [workflow/Regulated-Content-Readiness-Workflow-V25.json](workflow/Regulated-Content-Readiness-Workflow-V25.json) |
+| Custom Tool | `validate_approved_claim` | one registry | [tools/validate-approved-claim](tools/validate-approved-claim) |
+| Custom Tool | `submit_readiness_result` | one registry | [tools/submit-readiness-result](tools/submit-readiness-result) |
+
+The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; nothing else was changed.
+
+## How a request runs
+
+1. In Chat, IN0 gathers the draft, market and audience and starts the workflow through TR1 when the marketer uses `/content-readiness`. A bare "yes" does not start it. ClickUp and WordPress start it through TR2. Both converge at IN1.
+2. IN1 checks the draft, market and audience. G1 stops early if something is missing: `INPUT_REQUIRED`.
+3. RC1 finds claims and calls `validate_approved_claim` once with every cited ID. G2 stops if validation could not run: `VALIDATION_UNAVAILABLE`.
+4. RC2 reviews the full draft in context and returns findings. It never sets the state.
+5. RC3 applies fixed rules and sets exactly one state.
+6. RC4 packages the result. RC5 returns it to where the request came from: a ClickUp comment and status, a callback through `submit_readiness_result`, or a Chat reply.
+7. A person reviews. Formal approval happens outside the workflow.
+
+## Known limits
+
+- Reviewer judgment can vary on borderline drafts. Routing and state rules do not, because code owns them.
+- When a draft cites no claim ID the validator is not called, and the packaged validation status still reads `ok`. Nothing was checked against the register in that case. Uncited claims still produce `NEEDS_REVISION`.
+- The callback endpoint is protected by a bearer token, an unguessable pending request ID, a strict schema, first-result-wins and a 24 hour expiry. The platform gives no trustworthy caller-identity signal, so I do not claim verified Optimizely origin.
+- Built-in output evaluation criteria are configured on both agents. The UI path I found did not let me run them, so I validated with direct repeated runs.
+- Success measures in the write-up are targets, not measured business results.
 
 ## Repository contents
 
 | Folder | What is in it |
 |---|---|
-| [docs/](docs) | Architecture, workflow, agents, Skills, tools, recommendations, testing and evals, integrations, and the assignment mapping |
-| [instructions/](instructions) | The live text of both Skills |
-| [agents/](agents) | Both Specialized Agents, exported from the live tenant |
-| [workflow/](workflow) | The workflow export and the four code steps as Python files with their tests |
-| [tools/](tools) | Source for both custom tools and the discovery route, runnable as a small Next.js service |
-| [examples/](examples) | A webhook request and two results, generated by the workflow's own code steps |
-| [submission/](submission) | The two-page write-up submitted with the take-home |
+| [docs/](docs) | Architecture, workflow, agents, instructions, tools, recommendations, testing, integrations, assignment mapping |
+| [instructions/](instructions) | Text of both instructions (Skills) |
+| [agents/](agents) | Both specialized agents, exported from the tenant |
+| [workflow/](workflow) | The V25 export and the four code steps as Python with their tests |
+| [tools/](tools) | Source for both custom tools and the discovery route, as a small Next.js service |
+| [examples/](examples) | A webhook request and two results produced by the workflow's own code steps |
+| [submission/](submission) | The two-page write-up |
 
-## Human approval boundary
-
-`READY_FOR_FORMAL_REVIEW` means the draft can go to formal review. It is not approval. Medical, Legal and Regulatory approval stays with the human reviewers, outside this workflow.
-
-## Take-home alignment
-
-Each requirement, mapped to where it is met: [docs/assignment-mapping.md](docs/assignment-mapping.md).
-
-## Supporting references
-
-Everything needed to evaluate the submission is in this repository and the PDF. Two extra links:
-
-- Optional visual walkthrough / supporting documentation: https://lab.alexdesigns.com/fde-opti
-- Live production tool discovery endpoint: https://lab.alexdesigns.com/fde-opti/discovery
+Each assignment requirement, mapped to where it is met: [docs/assignment-mapping.md](docs/assignment-mapping.md).
 
 ## License
 

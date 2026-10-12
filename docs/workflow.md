@@ -1,6 +1,6 @@
 # Regulated Content Readiness Workflow
 
-Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulated-Content-Readiness-Workflow.json), live version V25, schema 1.4. The four code steps are also in [workflow/steps/](../workflow/steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
+Export: [workflow/Regulated-Content-Readiness-Workflow-V25.json](../workflow/Regulated-Content-Readiness-Workflow-V25.json), version V25, schema 1.4. Eight steps: two agents (RC1, RC2), two gates (G1, G2) and four code steps (IN1, RC3, RC4, RC5), started by two triggers (TR1 Chat, TR2 webhook). The four code steps are also in [workflow/steps/](../workflow/steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
 
 ## Steps
 
@@ -18,7 +18,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulat
 - **Failure behavior:** the two rows are complementary, so every output has a route.
 
 ### RC1 - Claims - Identification & Explanation
-- **Type:** Specialized Agent, Claim Identification & Explanation Agent
+- **Type:** Specialized Agent, RC1 - Claim Identification & Explanation Agent (V5)
 - **Purpose:** interpret claims.
 - **Input:** draft, market, audience, as-of date, cited claim IDs.
 - **Tool:** `validate_approved_claim`, called once with all cited IDs.
@@ -32,7 +32,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulat
 - **Failure behavior:** a tool outage or an invalid request skips the review and ends as `VALIDATION_UNAVAILABLE`.
 
 ### RC2 - Review - Content Readiness
-- **Type:** Specialized Agent, Content Readiness Reviewer
+- **Type:** Specialized Agent, RC2 - Draft Risk Reviewer (V7)
 - **Purpose:** review the draft in context.
 - **Input:** draft, market, audience.
 - **Output:** `blocking_findings` and a list of findings (type, quote, issue, suggestion, blocking), with an optional `suggested_revision` on a blocking finding.
@@ -75,6 +75,8 @@ Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulat
 
 There is no automated `APPROVED` state, and the step tests check that none appears.
 
-## Credits and timing
+## Known behavior to be aware of
 
-Only RC1 and RC2 are agents, but orchestration is not free: in early runs, a run that stopped before either agent showed 8 credits on the execution page, and runs that reached both agents showed 18. Later V25 runs showed 20 to 22, and V25 ClickUp runs that skipped both agents showed 12. These are the figures displayed by the tenant, not a computed cost model.
+- When a draft cites no claim ID, RC1 does not call the validator (`not_called`) and RC4 still packages `validation_status` as `ok`. Nothing was checked against the register in that case. This is a known limitation. A draft with uncited claim statements still ends as `NEEDS_REVISION`.
+- RC2's judgment on a borderline draft can vary between runs. Which step runs next, and which state results from the findings, is decided by code and does not vary.
+- Runs commonly take one to five minutes. I have seen longer, so treat that as a range, not a guarantee.
