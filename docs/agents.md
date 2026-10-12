@@ -2,7 +2,7 @@
 
 Both agents are exported from the tenant. Both use the Balanced inference setting (`simple_with_thinking` in the export), are not enabled for direct use in Chat, and are run only by the workflow. Both prompts place the shared Skill with `{skill: `regulated-readiness-standard`}`, which is how the tenant serializes a Skill mention.
 
-## RC1 - Claim Identification & Explanation Agent (V5)
+## RC1 - Claim Identification & Explanation Agent
 
 Export: [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/RC1-Claim-Identification-and-Explanation-Agent.json), handle `@claim_identification_explanation`
 
@@ -16,7 +16,7 @@ Export: [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/R
 - `claims`: per cited ID, the tool outcome (`valid`, `not_valid`, `not_found`), reasons, approved text, required disclaimer, the draft sentence, `wording_matches` and an explanation
 - `unresolved_candidate_claims`: efficacy, safety, indication, dosing, availability or comparison statements with no claim ID
 
-**Instruction / Skill references.** RC1-RC2 - Regulatory Review Policy (V4).
+**Instruction / Skill references.** RC1-RC2 - Regulatory Review Policy.
 
 **Tools.** `validate_approved_claim`, called once with every cited ID, or not at all when none are cited.
 
@@ -24,7 +24,7 @@ Export: [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/R
 
 **Role in the workflow.** Step RC1. Its output feeds G2 (is validation usable?) and RC3 (the decision).
 
-## RC2 - Draft Risk Reviewer (V7)
+## RC2 - Draft Risk Reviewer
 
 Export: [agents/RC2-Draft-Risk-Reviewer.json](../agents/RC2-Draft-Risk-Reviewer.json), handle `@content_readiness_reviewer`
 
@@ -34,7 +34,7 @@ Export: [agents/RC2-Draft-Risk-Reviewer.json](../agents/RC2-Draft-Risk-Reviewer.
 
 **Outputs.** JSON: `blocking_findings` and a list of findings, each with a type (`clarity`, `completeness`, `audience_fit`, `disclaimer`, `consistency`), the exact quote, the issue, a suggestion, `blocking`, and an optional `suggested_revision`.
 
-**Instruction / Skill references.** RC1-RC2 - Regulatory Review Policy (V4).
+**Instruction / Skill references.** RC1-RC2 - Regulatory Review Policy.
 
 **Tools.** None.
 
@@ -51,6 +51,6 @@ See [recommendations.md](recommendations.md).
 
 ## Evaluation criteria and guardrails
 
-Each export carries the Output Evaluation criteria configured in the tenant: nine for RC1, seven for RC2. The criteria are configured, but the UI path I found did not let me run the built-in evaluation on these versions, so there are no platform-evaluated runs and I show no scores. My evidence is direct repeated runs, described in [testing-and-evals.md](testing-and-evals.md).
+Each export carries the Output Evaluation criteria configured in the tenant: nine for RC1, seven for RC2. The criteria are configured, but no single-turn evaluation examples are attached and the agents list their runs as Not Evaluated, so there are no platform-evaluated runs and I show no scores. My evidence is direct repeated runs, described in [testing-and-evals.md](testing-and-evals.md).
 
 Guardrails on both agents are Enforcing, with auto-stop on and sensitivity 1. The platform manages that progression; I did not promote them by hand.

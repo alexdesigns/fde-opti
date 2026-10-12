@@ -5,11 +5,11 @@ Built by Alex Harris for the Optimizely Forward Deployed Engineer take-home. A g
 OptiThera is a fictional pharmaceutical brand. Every claim, market and draft in this repository is fictional.
 
 - Live documentation and demo: https://lab.alexdesigns.com/fde-opti
-- Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/tag/v1.2-fde-final
+- Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/latest
 
 ## Problem
 
-Marketing teams often find claim, context and readiness issues after briefs, copy and page work are already underway. Formal review then rejects the draft for an unapproved claim, wording that drifted from the approved version, or a missing disclaimer. The work goes back, and reviewers spend time on content that was never ready for them.
+Marketing teams often find claim, context and readiness issues after briefs, copy and page work are already underway. Formal review then rejects the draft for an unapproved claim, wording that drifted from the approved text, or a missing disclaimer. The work goes back, and reviewers spend time on content that was never ready for them.
 
 ## Solution
 
@@ -57,17 +57,17 @@ RC3 returns exactly one of four states, set by fixed rules in code:
 
 ## Assignment-to-component mapping
 
-The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent Workflows and Tools. The Optimizely AI interface calls Instructions "Skills". Names and versions below are exactly as built in the tenant.
+The take-home uses the terms Instructions, Main Agent, Specialized Agents, Agent Workflows and Tools. The Optimizely AI interface calls Instructions "Skills". Names below are exactly as built in the tenant.
 
-| Assignment concept | Component (exact name) | Version | File |
-|---|---|---|---|
-| Instructions / Main Agent | IN0 - OptiThera Content Intake (primary Skill, shortcut `/content-readiness`) | V16 | [instructions/IN0-OptiThera-Content-Intake.txt](instructions/IN0-OptiThera-Content-Intake.txt) |
-| Instructions (supporting) | RC1-RC2 - Regulatory Review Policy (Skill, `@regulated-readiness-standard`) | V4 | [instructions/RC1-RC2-Regulatory-Review-Policy.txt](instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
-| Specialized Agent | RC1 - Claim Identification & Explanation Agent | V5 | [agents/RC1-Claim-Identification-and-Explanation-Agent.json](agents/RC1-Claim-Identification-and-Explanation-Agent.json) |
-| Specialized Agent | RC2 - Draft Risk Reviewer | V7 | [agents/RC2-Draft-Risk-Reviewer.json](agents/RC2-Draft-Risk-Reviewer.json) |
-| Agent Workflow | Regulated Content Readiness Workflow | V25 | [workflow/Regulated-Content-Readiness-Workflow-V25.json](workflow/Regulated-Content-Readiness-Workflow-V25.json) |
-| Custom Tool | `validate_approved_claim` | one registry | [tools/validate-approved-claim](tools/validate-approved-claim) |
-| Custom Tool | `submit_readiness_result` | one registry | [tools/submit-readiness-result](tools/submit-readiness-result) |
+| Assignment concept | Component (exact name) | File |
+|---|---|---|
+| Instructions / Main Agent | IN0 - OptiThera Content Intake (primary Skill, shortcut `/content-readiness`) | [instructions/IN0-OptiThera-Content-Intake.txt](instructions/IN0-OptiThera-Content-Intake.txt) |
+| Instructions (supporting) | RC1-RC2 - Regulatory Review Policy (Skill, `@regulated-readiness-standard`) | [instructions/RC1-RC2-Regulatory-Review-Policy.txt](instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
+| Specialized Agent | RC1 - Claim Identification & Explanation Agent | [agents/RC1-Claim-Identification-and-Explanation-Agent.json](agents/RC1-Claim-Identification-and-Explanation-Agent.json) |
+| Specialized Agent | RC2 - Draft Risk Reviewer | [agents/RC2-Draft-Risk-Reviewer.json](agents/RC2-Draft-Risk-Reviewer.json) |
+| Agent Workflow | Regulated Content Readiness Workflow | [workflow/Regulated-Content-Readiness-Workflow.json](workflow/Regulated-Content-Readiness-Workflow.json) |
+| Custom Tool | `validate_approved_claim` | [tools/validate-approved-claim](tools/validate-approved-claim) |
+| Custom Tool | `submit_readiness_result` | [tools/submit-readiness-result](tools/submit-readiness-result) |
 
 The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; nothing else was changed.
 
@@ -88,7 +88,7 @@ The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; not
 - The callback endpoint is protected by a bearer token, an unguessable pending request ID, a strict schema, first-result-wins and a 24 hour expiry. The platform gives no trustworthy caller-identity signal, so I do not claim verified Optimizely origin.
 - Chat starts the check on `/content-readiness` or a clear request such as "run content readiness". A bare "yes" is not a reliable trigger on this platform, so it does not start a run.
 - Chat input is not guaranteed byte-preserving: some Chat runs normalized whitespace, while every word and its order stayed intact in the tested drafts. Chat can also fill an as-of date the user did not give.
-- Output evaluation criteria are configured on both agents (nine on RC1, seven on RC2), but no single-turn examples are attached and the current versions list their runs as Not Evaluated. I validated with direct repeated runs and UAT.
+- Output evaluation criteria are configured on both agents (nine on RC1, seven on RC2), but no single-turn examples are attached and the agents list their runs as Not Evaluated. I validated with direct repeated runs and UAT.
 - Success measures in the write-up are targets, not measured business results.
 
 ## Repository contents
@@ -98,7 +98,7 @@ The workflow export has the TR2 webhook `auth_key` replaced with `REDACTED`; not
 | [docs/](docs) | Architecture, workflow, agents, instructions, tools, recommendations, testing, integrations, assignment mapping |
 | [instructions/](instructions) | Text of both instructions (Skills) |
 | [agents/](agents) | Both specialized agents, exported from the tenant |
-| [workflow/](workflow) | The V25 export and the four code steps as Python with their tests |
+| [workflow/](workflow) | The workflow export and the four code steps as Python with their tests |
 | [tools/](tools) | Source for both custom tools and the discovery route, as a small Next.js service |
 | [examples/](examples) | A webhook request and two results produced by the workflow's own code steps |
 | [submission/](submission) | The two-page write-up |

@@ -1,8 +1,8 @@
 # Instructions and Skills
 
-The take-home asks for Instructions. The Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here IN0 is that Main Agent. The two texts in [instructions/](../instructions) are the tenant texts for the versions named below.
+The take-home asks for Instructions. The Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here IN0 is that Main Agent. The two texts in [instructions/](../instructions) are the live tenant texts.
 
-## IN0 - OptiThera Content Intake (V16)
+## IN0 - OptiThera Content Intake
 
 Text: [instructions/IN0-OptiThera-Content-Intake.txt](../instructions/IN0-OptiThera-Content-Intake.txt)
 
@@ -32,7 +32,7 @@ A readiness result counts only if it comes from a new execution of the exact wor
 
 The rule that the Skill must run the workflow and must not write its own readiness summary, status or claim table came from a real failure. See finding B in [testing-and-evals.md](testing-and-evals.md).
 
-## RC1-RC2 - Regulatory Review Policy (V4)
+## RC1-RC2 - Regulatory Review Policy
 
 Text: [instructions/RC1-RC2-Regulatory-Review-Policy.txt](../instructions/RC1-RC2-Regulatory-Review-Policy.txt)
 

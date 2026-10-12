@@ -1,6 +1,6 @@
 # Regulated Content Readiness Workflow
 
-Export: [workflow/Regulated-Content-Readiness-Workflow-V25.json](../workflow/Regulated-Content-Readiness-Workflow-V25.json), version V25, schema 1.4. Eight steps: two agents (RC1, RC2), two gates (G1, G2) and four code steps (IN1, RC3, RC4, RC5), started by two triggers (TR1 Chat, TR2 webhook). The four code steps are also in [workflow/steps/](../workflow/steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
+Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulated-Content-Readiness-Workflow.json), schema 1.4. Eight steps: two agents (RC1, RC2), two gates (G1, G2) and four code steps (IN1, RC3, RC4, RC5), started by two triggers (TR1 Chat, TR2 webhook). The four code steps are also in [workflow/steps/](../workflow/steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
 
 ## Steps
 
@@ -18,7 +18,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow-V25.json](../workflow/Reg
 - **Failure behavior:** the two rows are complementary, so every output has a route.
 
 ### RC1 - Claims - Identification & Explanation
-- **Type:** Specialized Agent, RC1 - Claim Identification & Explanation Agent (V5)
+- **Type:** Specialized Agent, RC1 - Claim Identification & Explanation Agent
 - **Purpose:** interpret claims.
 - **Input:** draft, market, audience, as-of date, cited claim IDs.
 - **Tool:** `validate_approved_claim`, called once with all cited IDs.
@@ -32,7 +32,7 @@ Export: [workflow/Regulated-Content-Readiness-Workflow-V25.json](../workflow/Reg
 - **Failure behavior:** a tool outage or an invalid request skips the review and ends as `VALIDATION_UNAVAILABLE`.
 
 ### RC2 - Review - Content Readiness
-- **Type:** Specialized Agent, RC2 - Draft Risk Reviewer (V7)
+- **Type:** Specialized Agent, RC2 - Draft Risk Reviewer
 - **Purpose:** review the draft in context.
 - **Input:** draft, market, audience.
 - **Output:** `blocking_findings` and a list of findings (type, quote, issue, suggestion, blocking), with an optional `suggested_revision` on a blocking finding.

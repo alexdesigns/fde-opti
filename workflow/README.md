@@ -1,6 +1,6 @@
 # Workflow export
 
-[Regulated-Content-Readiness-Workflow-V25.json](Regulated-Content-Readiness-Workflow-V25.json) is the Regulated Content Readiness Workflow, version V25, exported from the Optimizely AI tenant with the platform's own export (Download Agent, Copy as JSON). It embeds both specialized agents.
+[Regulated-Content-Readiness-Workflow.json](Regulated-Content-Readiness-Workflow.json) is the Regulated Content Readiness Workflow, exported from the Optimizely AI tenant with the platform's own export (Download Agent, Copy as JSON). It embeds both specialized agents.
 
 Credential values are intentionally omitted. The export included the TR2 webhook trigger's `auth_key`; that one field is replaced with `REDACTED`. Everything else, including the trigger's auth header name and format, is as exported. To import it, set a new webhook key on TR2 after import.
 
