@@ -1,7 +1,5 @@
 # Tool discovery
 
-Live production tool discovery endpoint: https://lab.alexdesigns.com/fde-opti/discovery
-
 `GET /fde-opti/discovery` returns static JSON in the shape the Optimizely AI tools SDK emits: a `functions` array, one entry per tool, each with `name`, `description`, `parameters` (name, type, description, required), a relative `endpoint` and `http_method`. Source: [app/fde-opti/discovery/route.ts](../app/fde-opti/discovery/route.ts), which serves `REGISTRY_DISCOVERY` from [shared/registry.ts](../shared/registry.ts).
 
 ## How it is registered
@@ -23,8 +21,10 @@ Discovery is public on purpose: it contains only tool metadata. It carries no cr
 
 ## Checking it
 
+Start the service from this folder, then:
+
 ```bash
-curl -s https://lab.alexdesigns.com/fde-opti/discovery | python3 -m json.tool
+curl -s http://localhost:3000/fde-opti/discovery | python3 -m json.tool
 ```
 
-A local server started from this folder returns the same JSON at `http://localhost:3000/fde-opti/discovery`; I compared the two before publishing and they were identical.
+The local output matched the production endpoint when I compared them before publishing.

@@ -4,7 +4,6 @@ Built by Alex Harris for the Optimizely Forward Deployed Engineer take-home. A g
 
 OptiThera is a fictional pharmaceutical brand. Every claim, market and draft in this repository is fictional.
 
-- Live documentation and demo: https://lab.alexdesigns.com/fde-opti
 - Release with the full evaluator ZIP and the PDF write-up: https://github.com/alexdesigns/fde-opti/releases/latest
 
 ## Problem
