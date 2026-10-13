@@ -44,5 +44,4 @@ approved state. A ready ClickUp task moves to Formal Review, where a person assi
 reviewer.
 
 EXPORT NOTE
-This is the platform export with triggers[0].auth_key (the TR2 webhook key) replaced with
-REDACTED. Set a new key on TR2 after importing it.
+This is the platform export. The TR2 webhook auth_key is replaced with REDACTED.

@@ -21,7 +21,7 @@ A readiness check that runs earlier, in the places marketers already work: Optim
 
 ## Why this architecture
 
-I didn't use AI for every step. The two agents do the work that needs reading and judgment: spotting claims in marketing copy and reviewing a whole draft in context. Whether a claim is approved is a fact, so a tool looks it up. Checking required inputs, setting the final state, packaging the result and sending it back each have one controlled answer, so those are code. A model's judgment can vary from run to run, but the state is always set by the same rules. Formal approval stays with people.
+I didn't use AI for every step. The two agents do the work that needs reading and judgment: spotting claims in marketing copy and reviewing a whole draft in context. Whether a claim is approved is a fact, so a tool looks it up. Checking required inputs, setting the final state, packaging the result and sending it back each have one controlled answer, so those are code. A model's judgment can vary from run to run, while the readiness state is set by fixed rules in code. Formal approval stays with people.
 
 Built in Optimizely AI: 2 instructions, 2 specialized agents, 2 custom tools, 1 workflow, 4 code steps, 2 deterministic gates, 2 triggers.
 
@@ -43,7 +43,7 @@ Optimizely AI lists Instructions under Skills.
 
 OptiThera, its product, claims and drafts are fictional. The Instructions, agents, workflow, code, tools and the ClickUp and WordPress connections are the actual build.
 
-Every `.json` file is an unchanged platform export, except the workflow, where the TR2 webhook `auth_key` is replaced with `REDACTED`. Set a new webhook key on TR2 after importing it.
+Every `.json` file is an unchanged platform export, except the workflow. The TR2 webhook auth_key is replaced with REDACTED.
 
 ## Also in this repository
 
