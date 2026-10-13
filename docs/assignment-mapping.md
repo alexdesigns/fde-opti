@@ -7,31 +7,31 @@ Each take-home requirement, where it is implemented, and the artifact that shows
 | Take-home requirement | Implementation | Repo artifact |
 |---|---|---|
 | Identify a real-world problem | Regulated-content issues found late, after briefs, content and pages are underway, causing rework and slower formal MLR review | [README](../README.md#problem), PDF page 1 |
-| Instructions (Main Agent): additional context | IN0 - OptiThera Content Intake (inputs, the four states, how to run the check, rules) and RC1-RC2 - Regulatory Review Policy (authority boundaries, finding format, recommendation framing) | [instructions/](../instructions), [instructions-and-skills.md](instructions-and-skills.md) |
+| Instructions (Main Agent): additional context | IN0 - OptiThera Content Intake (inputs, the four states, how to run the check, rules) and RC1-RC2 - Regulatory Review Policy (authority boundaries, finding format, recommendation framing) | [02-instructions/](../02-instructions), [instructions-and-skills.md](instructions-and-skills.md) |
 | Instructions (Main Agent): trigger instructions | IN0's keyword trigger description, plus its run rules: the check starts on the `/content-readiness` shortcut or a clear request, a complete draft with no request is pointed to the shortcut, a bare "yes" does not start it, missing input is asked for first, no duplicate run | [instructions-and-skills.md](instructions-and-skills.md#in0---optithera-content-intake) |
 | 2+ Specialized Agents: purpose | RC1 - Claim Identification & Explanation Agent; RC2 - Draft Risk Reviewer | [agents.md](agents.md) |
 | Specialized Agents: inputs | Claim agent: draft, market, audience, as-of date, cited IDs. Reviewer: draft, market, audience | [agents.md](agents.md), parameters in each export |
 | Specialized Agents: outputs | Claim agent: validation status, per-claim results, uncited claims. Reviewer: structured findings with optional suggested revision | [agents.md](agents.md), output schema in each export |
 | Tool integration (existing and custom tools) | The Claim agent calls `validate_approved_claim`; RC5 calls `submit_readiness_result`; RC5 and IN1 use the ClickUp connector | [tools.md](tools.md), [workflow.md](workflow.md) |
-| Agent Workflow | Regulated Content Readiness Workflow: two triggers (TR1, TR2) and eight steps, IN1, G1, RC1, G2, RC2, RC3, RC4, RC5 | [workflow/](../workflow), [workflow.md](workflow.md) |
+| Agent Workflow | Regulated Content Readiness Workflow: two triggers (TR1, TR2) and eight steps, IN1, G1, RC1, G2, RC2, RC3, RC4, RC5 | [04-workflow/](../04-workflow), [workflow.md](workflow.md) |
 | Optional custom tool: need | Claim facts have exact answers a model must not guess; webhook requests need a governed way back | [tools.md](tools.md) |
 | Optional custom tool: purpose | Deterministic claim validation; result delivery | [tools.md](tools.md) |
-| Optional custom tool: input types | Arrays, strings, a boolean, an array of finding objects | [tools.md](tools.md), [tools/discovery/README.md](../tools/discovery/README.md) |
+| Optional custom tool: input types | Arrays, strings, a boolean, an array of finding objects | [tools.md](tools.md), [05-tools/discovery/README.md](../05-tools/discovery/README.md) |
 | Optional custom tool: output | Per-claim outcome, reasons, approved wording, disclaimer; store acknowledgement | [tools.md](tools.md) |
 | Optional custom tool: how its output is used | RC1 copies the validator's status, outcome, reasons, approved text and disclaimer unchanged; G2 routes on that status; RC3 sets the state from the outcomes and builds the Approved wording and Required disclaimer recommendations from the validator's own text | [workflow.md](workflow.md), [recommendations.md](recommendations.md) |
-| Optional custom tool: hosting | Next.js routes on Vercel, one bearer-token registry, public discovery endpoint | [tools/README.md](../tools/README.md) |
-| Optional custom tool: integration | One Optimizely AI tool registry registered from the discovery URL | [tools/discovery/README.md](../tools/discovery/README.md) |
+| Optional custom tool: hosting | Next.js routes on Vercel, one bearer-token registry, public discovery endpoint | [05-tools/README.md](../05-tools/README.md) |
+| Optional custom tool: integration | One Optimizely AI tool registry registered from the discovery URL | [05-tools/discovery/README.md](../05-tools/discovery/README.md) |
 
 ## Deliverables
 
 | Deliverable | Where |
 |---|---|
 | Exact names of Instructions, Specialized Agents and Workflow | [README assignment-to-component mapping](../README.md#assignment-to-component-mapping) |
-| Main Agent (Instruction) text | [instructions/IN0-OptiThera-Content-Intake.txt](../instructions/IN0-OptiThera-Content-Intake.txt), [instructions/RC1-RC2-Regulatory-Review-Policy.txt](../instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
-| Specialized Agent JSON | [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/RC1-Claim-Identification-and-Explanation-Agent.json), [agents/RC2-Draft-Risk-Reviewer.json](../agents/RC2-Draft-Risk-Reviewer.json) |
-| Workflow JSON | [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulated-Content-Readiness-Workflow.json) |
-| Custom tool source on GitHub | [tools/](../tools) in this public repository |
-| Two-page write-up | [submission/AlexHarris_OpalAgentSolution.pdf](../submission/AlexHarris_OpalAgentSolution.pdf) |
+| Main Agent (Instruction) text | [02-instructions/IN0-OptiThera-Content-Intake.txt](../02-instructions/IN0-OptiThera-Content-Intake.txt), [02-instructions/RC1-RC2-Regulatory-Review-Policy.txt](../02-instructions/RC1-RC2-Regulatory-Review-Policy.txt) |
+| Specialized Agent JSON | [03-agents/RC1-Claim-Identification-and-Explanation-Agent.json](../03-agents/RC1-Claim-Identification-and-Explanation-Agent.json), [03-agents/RC2-Draft-Risk-Reviewer.json](../03-agents/RC2-Draft-Risk-Reviewer.json) |
+| Workflow JSON | [04-workflow/Regulated-Content-Readiness-Workflow.json](../04-workflow/Regulated-Content-Readiness-Workflow.json) |
+| Custom tool source on GitHub | [05-tools/](../05-tools) in this public repository |
+| Two-page write-up | [01-writeup/AlexHarris_OpalAgentSolution.pdf](../01-writeup/AlexHarris_OpalAgentSolution.pdf) |
 
 ## Evaluation criteria
 

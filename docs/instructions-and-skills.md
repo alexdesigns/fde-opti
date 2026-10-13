@@ -1,10 +1,10 @@
 # Instructions and Skills
 
-The take-home asks for Instructions. The Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here IN0 is that Main Agent. The two texts in [instructions/](../instructions) are the live tenant texts.
+The take-home asks for Instructions. The Optimizely AI interface lists them as Skills under Context > Skills, and the edit page is still titled Instructions. The take-home's own documentation calls Instructions "Main Agents"; here IN0 is that Main Agent. The two texts in [02-instructions/](../02-instructions) are the live tenant texts.
 
 ## IN0 - OptiThera Content Intake
 
-Text: [instructions/IN0-OptiThera-Content-Intake.txt](../instructions/IN0-OptiThera-Content-Intake.txt)
+Text: [02-instructions/IN0-OptiThera-Content-Intake.txt](../02-instructions/IN0-OptiThera-Content-Intake.txt)
 
 **Classification.** Primary Instruction (Skill), shortcut `/content-readiness`. It is the Main Agent's entry behavior in Chat.
 
@@ -34,7 +34,7 @@ The rule that the Skill must run the workflow and must not write its own readine
 
 ## RC1-RC2 - Regulatory Review Policy
 
-Text: [instructions/RC1-RC2-Regulatory-Review-Policy.txt](../instructions/RC1-RC2-Regulatory-Review-Policy.txt)
+Text: [02-instructions/RC1-RC2-Regulatory-Review-Policy.txt](../02-instructions/RC1-RC2-Regulatory-Review-Policy.txt)
 
 **Classification.** Supporting Instruction (Skill), shortcut `@regulated-readiness-standard`.
 

@@ -1,3 +1,17 @@
+IN0 - OptiThera Content Intake
+Instruction (listed under Skills in Optimizely AI). Shortcut: /content-readiness
+
+The main agent's entry point in Chat. It collects the draft, market and audience,
+then starts the Regulated Content Readiness Workflow when the person asks for a check.
+
+------------------------------------------------------------
+WHEN TO USE (trigger text, as configured)
+------------------------------------------------------------
+ONLY use for OptiThera regulated content readiness: checking whether a draft (web copy, email, banner, social post) is ready to send to formal regulatory review (MLR / medical-legal-regulatory review), a pre-review or claim readiness check, or whether a draft's cited claims (for example [CLM-001]) can be used for a market and audience. Do NOT use for general healthcare questions, writing new content from scratch, SEO or performance questions, or questions about formal approval status. Also use whenever the person says "run content readiness", "run content readiness again" or "content readiness", or uses /content-readiness.
+
+------------------------------------------------------------
+INSTRUCTION TEXT (as configured)
+------------------------------------------------------------
 ## Context
 
 This Skill is the conversational front door for regulated content in chat. It gathers the draft, market and audience, then runs the Regulated Content Readiness Workflow when the marketer asks for a check or confirms they want one. The workflow does the actual readiness check. It is a pre-check, not approval. Formal approval stays with the human regulatory reviewers.

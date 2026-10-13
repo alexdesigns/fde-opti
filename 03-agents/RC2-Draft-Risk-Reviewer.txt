@@ -1,0 +1,26 @@
+RC2 - Draft Risk Reviewer
+Specialized Agent. Export: RC2-Draft-Risk-Reviewer.json
+The full prompt is in the export (prompt_template), along with the output schema and
+the quality criteria configured for this agent.
+
+ROLE
+Reads the whole draft in context and lists what formal review would likely send back:
+unclear or incomplete copy, language that doesn't fit the audience, missing disclaimer
+references, and inconsistencies. Each finding is marked blocking or advisory and can
+carry a suggested revision.
+
+INPUT
+draft_content, market, audience. RC2 does not see the claim results; the RC3 code step
+combines both reviews.
+
+OUTPUT
+JSON: blocking_findings (true or false) and findings, each with a type (clarity,
+completeness, audience_fit, disclaimer or consistency), the quoted text, the issue, a
+suggestion, and whether it blocks.
+
+TOOLS
+None. It only reads the draft.
+
+BOUNDARY
+RC2 does not approve content, does not decide whether a claim is valid, does not set
+the readiness state, and its suggestions are never presented as approved wording.

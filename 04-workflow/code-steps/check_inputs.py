@@ -5,7 +5,7 @@ from datetime import date
 
 # IN1. Checks the request before review. A ClickUp-started run arrives as the raw Call webhook body: this step parses it
 # with code, reads the task and the draft Doc through the ClickUp connector, and hands on exact values. No model picks the
-# task ID or rewrites the draft. Every other source (Chat, webhook) behaves as before.
+# task ID or rewrites the draft. Every other source (Chat, Lab) behaves as before.
 TASK_ID = re.compile(r"[A-Za-z0-9]{4,20}")
 DRAFT_DOC_SUFFIX = ": Draft Copy"
 

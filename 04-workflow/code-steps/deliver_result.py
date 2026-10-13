@@ -1,6 +1,6 @@
 import json
 
-# Hands the packaged readiness result to the requesting system through the registered callback tool.
+# Hands the packaged readiness result to the requesting system through the registered Lab tool.
 # Delivery is plumbing. It decides nothing and changes nothing: every field is passed exactly as the
 # Result Packager produced it. Chat runs carry no request_id, so nothing is delivered for them.
 FIELDS = ("request_id", "status", "summary", "validation_status", "formal_review_required", "checked_at", "findings")
@@ -184,13 +184,13 @@ def handler(input, ctx):
     try:
         reply = tools.call("submit_readiness_result", **{k: package.get(k) for k in FIELDS})
     except OpalTmsSdkError as error:
-        # Opal retries a failed step. The callback service accepts an identical resubmission, so a retry is safe.
+        # Opal retries a failed step. The Lab accepts an identical resubmission, so a retry is safe.
         raise RuntimeError(f"Delivery failed: {type(error).__name__}.") from None
 
     # A tool failure comes back as a value, not an exception, so success is checked explicitly.
     body = reply.get("response") if isinstance(reply, dict) else None
     if not (isinstance(reply, dict) and reply.get("response_type") != "error" and isinstance(body, dict) and body.get("status") == "ok"):
         code = body.get("status_code") if isinstance(body, dict) else None
-        raise RuntimeError(f"Delivery failed: the callback service did not accept the result (status {code}).")
+        raise RuntimeError(f"Delivery failed: the Lab did not accept the result (status {code}).")
     return {"delivery": "delivered", "request_id": package["request_id"], "status": package.get("status"),
             "summary": f"Delivered {package.get('status')} for request {package['request_id']}."}

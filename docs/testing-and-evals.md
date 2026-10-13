@@ -8,11 +8,11 @@ The gates, the state rules, packaging, delivery and both tools are code, so they
 
 | Suite | Count | Covers |
 |---|---|---|
-| [workflow/steps/test_steps.py](../workflow/steps/test_steps.py) | 61 | IN1, RC3 and RC4: every state, gate spoofing from draft text, unreadable agent output, invented claim IDs, malformed `request_id`, recommendation rules, no approved state |
-| [workflow/steps/test_delivery.py](../workflow/steps/test_delivery.py) | 16 | RC5 routing by source: Chat, callback, ClickUp |
-| [workflow/steps/test_clickup.py](../workflow/steps/test_clickup.py) | 96 | The ClickUp path end to end against a stubbed connector: reading the task and draft Doc, fields, comment, status, duplicate events |
-| [workflow/steps/test_examples.py](../workflow/steps/test_examples.py) | 1 | The published request example passes IN1 |
-| `npm test` in [tools/](../tools) | see `npm test` output | Validator rules and input rejection, result contract, store create, complete, duplicate, conflict and expiry, registry auth, the published result examples |
+| [04-workflow/code-steps/test_steps.py](../04-workflow/code-steps/test_steps.py) | 61 | IN1, RC3 and RC4: every state, gate spoofing from draft text, unreadable agent output, invented claim IDs, malformed `request_id`, recommendation rules, no approved state |
+| [04-workflow/code-steps/test_delivery.py](../04-workflow/code-steps/test_delivery.py) | 16 | RC5 routing by source: Chat, callback, ClickUp |
+| [04-workflow/code-steps/test_clickup.py](../04-workflow/code-steps/test_clickup.py) | 96 | The ClickUp path end to end against a stubbed connector: reading the task and draft Doc, fields, comment, status, duplicate events |
+| [04-workflow/code-steps/test_examples.py](../04-workflow/code-steps/test_examples.py) | 1 | The published request example passes IN1 |
+| `npm test` in [05-tools/](../05-tools) | see `npm test` output | Validator rules and input rejection, result contract, store create, complete, duplicate, conflict and expiry, registry auth, the published result examples |
 
 Run them:
 

@@ -1,6 +1,6 @@
 # Regulated Content Readiness Workflow
 
-Export: [workflow/Regulated-Content-Readiness-Workflow.json](../workflow/Regulated-Content-Readiness-Workflow.json), schema 1.4. Eight steps: two agents (RC1, RC2), two gates (G1, G2) and four code steps (IN1, RC3, RC4, RC5), started by two triggers (TR1 Chat, TR2 webhook). The four code steps are also in [workflow/steps/](../workflow/steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
+Export: [04-workflow/Regulated-Content-Readiness-Workflow.json](../04-workflow/Regulated-Content-Readiness-Workflow.json), schema 1.4. Eight steps: two agents (RC1, RC2), two gates (G1, G2) and four code steps (IN1, RC3, RC4, RC5), started by two triggers (TR1 Chat, TR2 webhook). The four code steps are also in [04-workflow/code-steps/](../04-workflow/code-steps) as plain Python, identical to the code in the export apart from a trailing newline, with their tests.
 
 ## Steps
 

@@ -46,4 +46,4 @@ Expected: HTTP 200, `all_valid: false`, CLM-001 `valid`, CLM-004 `not_valid` wit
 
 ## Deploy on Vercel
 
-Import the repository with `tools` as the root directory. Set `OPTITHERA_REGULATED_REGISTRY_TOKEN` in the project's environment variables. To keep callback results across function instances, connect a private Vercel Blob store, which sets `BLOB_READ_WRITE_TOKEN`; without it results go to the instance's temporary disk, which is fine locally and not durable on serverless. Then add a tool registry in Optimizely AI with `https://<your-domain>/fde-opti/discovery` as the discovery URL and the same token as the bearer credential.
+Import the repository with `05-tools` as the root directory. Set `OPTITHERA_REGULATED_REGISTRY_TOKEN` in the project's environment variables. To keep callback results across function instances, connect a private Vercel Blob store, which sets `BLOB_READ_WRITE_TOKEN`; without it results go to the instance's temporary disk, which is fine locally and not durable on serverless. Then add a tool registry in Optimizely AI with `https://<your-domain>/fde-opti/discovery` as the discovery URL and the same token as the bearer credential.

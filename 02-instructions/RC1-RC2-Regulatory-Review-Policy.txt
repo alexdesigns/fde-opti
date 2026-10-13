@@ -1,3 +1,12 @@
+RC1-RC2 - Regulatory Review Policy
+Instruction (listed under Skills in Optimizely AI). Reference: regulated-readiness-standard
+
+Shared review rules. It has no trigger text of its own: both Specialized Agents
+pull it into their prompts by its reference, regulated-readiness-standard.
+
+------------------------------------------------------------
+INSTRUCTION TEXT (as configured)
+------------------------------------------------------------
 ## Context
 Readiness standard for OptiThera regulated content. A readiness check decides whether a draft is fit to send to formal regulatory review. It is never approval. Formal approval belongs to the human regulatory reviewers.
 

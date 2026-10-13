@@ -1,6 +1,6 @@
 # Custom tools
 
-Both tools are served by one tool registry in Optimizely AI, named "OptiThera Regulated Content Readiness". The registry is registered with a discovery URL; Optimizely AI reads the tool list from it and calls each tool's endpoint with the registry's bearer token. Source: [tools/](../tools). Discovery: [tools/discovery/README.md](../tools/discovery/README.md).
+Both tools are served by one tool registry in Optimizely AI, named "OptiThera Regulated Content Readiness". The registry is registered with a discovery URL; Optimizely AI reads the tool list from it and calls each tool's endpoint with the registry's bearer token. Source: [05-tools/](../05-tools). Discovery: [05-tools/discovery/README.md](../05-tools/discovery/README.md).
 
 | | `validate_approved_claim` | `submit_readiness_result` |
 |---|---|---|
@@ -65,7 +65,7 @@ Optimizely AI sends `{"parameters": {...}}`; the tool also accepts the bare obje
 
 **What it does not do.** It does not perform formal MLR approval and does not read prose. It checks only IDs that are written in the draft. When a draft cites no ID, RC1 does not call it, and nothing is checked against the register for that run.
 
-**The register.** [approved-claims.ts](../tools/validate-approved-claim/approved-claims.ts) is a fictional four-claim register built to exercise each rule: CLM-001 valid for US, both audiences; CLM-002 valid for US and UK, HCP only; CLM-003 expired; CLM-004 superseded by CLM-001. In a real deployment `validateClaims` takes a different `loadClaims` that reads the customer's claims system, read-only.
+**The register.** [approved-claims.ts](../05-tools/validate-approved-claim/approved-claims.ts) is a fictional four-claim register built to exercise each rule: CLM-001 valid for US, both audiences; CLM-002 valid for US and UK, HCP only; CLM-003 expired; CLM-004 superseded by CLM-001. In a real deployment `validateClaims` takes a different `loadClaims` that reads the customer's claims system, read-only.
 
 ## submit_readiness_result
 

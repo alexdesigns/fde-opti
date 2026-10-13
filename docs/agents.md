@@ -4,7 +4,7 @@ Both agents are exported from the tenant. Both use the Balanced inference settin
 
 ## RC1 - Claim Identification & Explanation Agent
 
-Export: [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/RC1-Claim-Identification-and-Explanation-Agent.json), handle `@claim_identification_explanation`
+Export: [03-agents/RC1-Claim-Identification-and-Explanation-Agent.json](../03-agents/RC1-Claim-Identification-and-Explanation-Agent.json), handle `@claim_identification_explanation`
 
 **Purpose.** Confirm every cited claim with the validator, check whether each cited sentence keeps the approved meaning, find claim statements that cite no ID, and explain each result in plain language.
 
@@ -26,7 +26,7 @@ Export: [agents/RC1-Claim-Identification-and-Explanation-Agent.json](../agents/R
 
 ## RC2 - Draft Risk Reviewer
 
-Export: [agents/RC2-Draft-Risk-Reviewer.json](../agents/RC2-Draft-Risk-Reviewer.json), handle `@content_readiness_reviewer`
+Export: [03-agents/RC2-Draft-Risk-Reviewer.json](../03-agents/RC2-Draft-Risk-Reviewer.json), handle `@content_readiness_reviewer`
 
 **Purpose.** Read the whole draft the way an experienced editor preparing it for formal review would, and list what would get it sent back.
 

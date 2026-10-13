@@ -1,0 +1,25 @@
+RC1 - Claim Identification & Explanation Agent
+Specialized Agent. Export: RC1-Claim-Identification-and-Explanation-Agent.json
+The full prompt is in the export (prompt_template), along with the output schema and
+the quality criteria configured for this agent.
+
+ROLE
+Finds the regulated claims in a draft and checks every cited claim ID against the
+approved records with one call to validate_approved_claim. Explains each result in
+plain language.
+
+INPUT
+draft_content, market, audience (required); as_of_date, cited_claim_ids (optional).
+The workflow's IN1 step pulls the cited claim IDs out of the draft.
+
+OUTPUT
+JSON: validation_status, all_valid, one result per cited claim (tool outcome, reasons,
+approved wording, required disclaimer, whether the draft's wording matches, and an
+explanation), plus claim statements that carry no claim ID.
+
+TOOLS
+validate_approved_claim (custom tool).
+
+BOUNDARY
+RC1 does not set the readiness state or approve content. It passes market, audience
+and date to the tool exactly as given and never invents a claim ID.

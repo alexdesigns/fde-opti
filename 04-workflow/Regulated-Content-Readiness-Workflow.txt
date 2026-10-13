@@ -1,0 +1,48 @@
+Regulated Content Readiness Workflow
+Agent Workflow. Export: Regulated-Content-Readiness-Workflow.json
+The code each code step runs is in code-steps/.
+
+ENTRY
+Chat:               IN0 collects the draft, market and audience -> TR1 Chat trigger
+ClickUp, WordPress: TR2 webhook trigger
+Both paths meet at IN1:
+
+IN1 -> G1 -> RC1 -> G2 -> RC2 -> RC3 -> RC4 -> RC5
+
+STEPS
+IN1  CODE                 Checks that the draft, market and audience are present and pulls
+                          out the cited claim IDs. For a ClickUp request it reads the task
+                          and its draft Doc with the ClickUp tools.
+G1   DETERMINISTIC GATE   If IN1 found everything, continue to RC1. If not, skip both agents
+                          and go to RC3, which returns INPUT_REQUIRED. A ClickUp event that
+                          was already delivered also stops here, and RC5 posts nothing.
+RC1  SPECIALIZED AGENT    Finds the claims in the draft and checks every cited claim ID with
+                          validate_approved_claim in one call.
+G2   DETERMINISTIC GATE   If the claim check returned usable results, or the draft cited no
+                          claim IDs so no lookup was needed, continue to RC2. If not, skip
+                          RC2 and go to RC3, which returns VALIDATION_UNAVAILABLE.
+RC2  SPECIALIZED AGENT    Reads the whole draft and lists blocking and advisory problems.
+RC3  CODE                 Applies fixed rules to everything above and sets exactly one state.
+RC4  CODE                 Packages the state, findings and any suggested changes.
+RC5  CODE                 Sends the result back: a comment and status change on the ClickUp
+                          task, or submit_readiness_result for a callback request such as
+                          WordPress. A Chat request gets its result in the conversation.
+
+WHY THE STEPS CHANGE TYPE
+IN1 and G1   Whether the inputs are there is an objective check, so it's code.
+RC1          Spotting claims in marketing copy takes reading, so it's an agent. Whether a
+             claim is approved is a fact, so the agent looks it up with a tool.
+G2           Whether the lookup worked is objective, so it's a gate.
+RC2          Judging a whole draft in context is where a model is useful.
+RC3          The final state has one controlled answer, so code sets it, not the model.
+RC4, RC5     Packaging and delivery are mechanical, so they're code.
+
+STATES
+INPUT_REQUIRED, NEEDS_REVISION, VALIDATION_UNAVAILABLE, READY_FOR_FORMAL_REVIEW.
+Only RC3 sets the state. READY_FOR_FORMAL_REVIEW is not approval, and there is no
+approved state. A ready ClickUp task moves to Formal Review, where a person assigns the
+reviewer.
+
+EXPORT NOTE
+This is the platform export with triggers[0].auth_key (the TR2 webhook key) replaced with
+REDACTED. Set a new key on TR2 after importing it.
