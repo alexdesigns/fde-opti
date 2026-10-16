@@ -1,10 +1,12 @@
 # Quick start: run the workflow
 
-Run these in Optimizely AI Chat in the instance where the take-home was built. Every example below was run there on 16 October 2026.
+Run these in Optimizely AI Chat in the instance where the take-home was built: https://mark.optimizely.com/instances/2c95b4497e89479f9206e588f4722915/chat
+
+Every example below was run there on 16 October 2026.
 
 ## Run it
 
-1. Start a new Chat conversation.
+1. Open the Chat link above and start a new conversation.
 2. Paste an example below and send it. Keep the line break between the first line and the draft.
 3. Wait a few minutes. The reply shows the readiness state and the findings.
 4. Open **Agents, then Executions**, and open the newest *Regulated Content Readiness Workflow* run to see each step.
