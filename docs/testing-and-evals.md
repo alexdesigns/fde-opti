@@ -17,14 +17,14 @@ The gates, the state rules, packaging, delivery and both tools are code, so they
 Run them:
 
 ```bash
-cd workflow/steps && for t in test_steps test_delivery test_clickup test_examples; do python3 -I $t.py .; done
-cd tools && npm install && npm test
+cd 04-workflow/code-steps && for t in test_steps test_delivery test_clickup test_examples; do python3 -I $t.py .; done
+cd 05-tools && npm install && npm test
 ```
 
 What the tests and the live runs establish, by behavior:
 
 - **Trigger and non-trigger.** In Chat this lives in IN0 (see [instructions-and-skills.md](instructions-and-skills.md)). On ClickUp, only a move to Internal Review starts a run. On WordPress, autosave, an unchanged save and a double-click do not start extra runs.
-- **Input validation.** Missing draft, market or audience gives `INPUT_REQUIRED` before either agent runs. `USA` is rejected, not converted.
+- **Input validation.** Missing draft, market or audience gives `INPUT_REQUIRED` before either agent runs. IN1 accepts only a two-letter market, so `USA` is not converted there. From Chat, the IN0 intake converted `USA` to `US` before starting the workflow in a 16 October run; see [QUICK-START.md](../QUICK-START.md).
 - **Canonical states.** Exactly four. The step tests check that no approved state is produced.
 - **Delivery.** Chat needs no callback; a webhook with a valid `request_id` calls `submit_readiness_result`; ClickUp writes fields, then the comment, then the status.
 - **Duplicate suppression.** A retried ClickUp event is recognized by a delivery key in the task's comments and posts nothing. An identical callback is acknowledged as a duplicate; a different result for the same request is rejected.

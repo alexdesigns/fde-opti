@@ -4,6 +4,8 @@ A pre-review workflow built in Optimizely AI that catches regulated-content issu
 
 ## Start here
 
+To run it yourself, with a good and a bad example, see [QUICK-START.md](QUICK-START.md).
+
 1. `01-writeup/AlexHarris_OpalAgentSolution.pdf`: the two-page write-up.
 2. `02-instructions/`: how the system is instructed, including the trigger text for the main Instruction.
 3. `03-agents/`: the two Specialized Agents, where AI judgment is used.
